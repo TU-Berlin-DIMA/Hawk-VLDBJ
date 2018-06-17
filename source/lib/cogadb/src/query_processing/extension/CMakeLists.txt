@@ -1,0 +1,12 @@
+add_source_cogadb(artificial_pipeline_breaker.cpp
+                  bulk_operator.cpp
+                  create_table_operator.cpp
+		  delete_table_operator.cpp
+		  export_into_file.cpp
+		  generic_groupby_operator.cpp
+		  generic_selection_operator.cpp
+                  limit_operator.cpp
+		  map_udf_operator.cpp
+		  rename_table_operator.cpp
+		  sink_operator.cpp
+		  store_table_operator.cpp)

@@ -1,0 +1,3 @@
+set code_gen.opt.ocl_grouped_aggregation_strategy=sequential
+set code_gen.opt.ocl_grouped_aggregation.hashtable_size_multiplier=0.001
+

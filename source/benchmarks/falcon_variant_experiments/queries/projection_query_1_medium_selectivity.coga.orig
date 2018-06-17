@@ -1,0 +1,1 @@
+select LO_QUANTITY, LO_DISCOUNT, LO_REVENUE from lineorder where LO_QUANTITY<25;

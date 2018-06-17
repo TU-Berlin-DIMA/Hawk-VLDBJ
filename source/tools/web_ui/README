@@ -1,0 +1,63 @@
+#################
+# CoGaDB Web UI #
+#################
+
+This is a simply interactive interface to query CoGaDB via its SQL interface. 
+It is meant for demonstration purposes only, do NOT use it for connections over the network 
+as the communication is not encrypted!
+
+#########
+# Setup #
+#########
+
+For this scenario, we need to setup CoGaDB as a database server process and we need a web server such as Apache to
+render the website. In the following, we use Apache to setup the web interface.
+
+# CoGaDB #
+##########
+
+You need to configure CoGaDB to use the CSV output format and that it listens on port 8000 for incoming connections.
+Furthermore, you need to install BSD netcat, which serves as a client.
+
+Here is a minimal set of coga script commands for this:
+
+   setdevice cpu
+   set path_to_database=PATH_TO_YOUR_DATABASE
+   loaddatabase
+   set result_output_format=csv
+   set print_query_plan=false
+   listen 8000
+
+# Apache (Webserver) #
+######################
+
+0. Install Apache and configure it. Here is a minimal Apache configuration:
+   <VirtualHost *:80>
+           ServerAdmin webmaster@localhost
+           DocumentRoot /var/www/html/
+
+           <Directory "/var/www/html/">
+              Options +Indexes +FollowSymLinks +MultiViews +Includes
+              AllowOverride None
+              Order allow,deny
+              allow from all
+           </Directory>
+
+           ErrorLog ${APACHE_LOG_DIR}/error.log
+           CustomLog ${APACHE_LOG_DIR}/access.log combined
+   </VirtualHost>
+
+1. Create a new folder within the web server's document root, e.g., /var/www/html/web_ui.
+
+2. Make sure that Apache has write access to that folder: 'chown www-data web_ui'
+
+3. Within the web UI folder, create symbolic links to all files in the web UI directory of your CoGaDB source directory:
+   'ln -s /home/<your_name>/gpudbms/cogadb/web_ui/* .'
+
+4. Well done! Now visit http://localhost/web_ui/ and enjoy the CoGaDB web interface.
+
+###########
+# Contact #
+###########
+
+If you have any issues using the web interface, do not hesitate to contact us.

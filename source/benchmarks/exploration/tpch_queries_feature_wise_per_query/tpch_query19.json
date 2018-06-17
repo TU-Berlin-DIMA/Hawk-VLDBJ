@@ -1,0 +1,675 @@
+{
+  "QUERY_PLAN": {
+    "OPERATOR_NAME": "GENERIC_GROUPBY",
+    "AGGREGATION_SPECIFICATION": [{
+      "AGGREGATION_FUNCTION": "SUM",
+      "ATTRIBUTE_REFERENCE": {
+        "COLUMN_NAME": "TPCH19MAP",
+        "TABLE_NAME": "<COMPUTED>",
+        "ATTRIBUTE_TYPE": "DOUBLE"
+      },
+      "RESULT_NAME": "REVENUE"
+    }],
+    "RIGHT_CHILD": null,
+    "LEFT_CHILD": {
+      "OPERATOR_NAME": "MAP_UDF",
+      "MAP_UDF_OUTPUT_ATTRIBUTES": [{
+        "ATTRIBUTE_TYPE": "DOUBLE",
+        "ATTRIBUTE_NAME": "TPCH19MAP",
+        "INTERNAL_VARIABLE_NAME": "TPCH19MAP"
+      }],
+      "MAP_UDF_CODE": [
+        "#<OUT>.TPCH19MAP#=#LINEITEM.L_EXTENDEDPRICE#*(1-#LINEITEM.L_DISCOUNT#);"
+      ],
+      "RIGHT_CHILD": null,
+      "LEFT_CHILD": {
+        "OPERATOR_NAME": "GENERIC_SELECTION",
+        "PREDICATE": {
+          "PREDICATE_TYPE": "OR_PREDICATE",
+          "PREDICATES": [{
+
+              "PREDICATE": {
+                "PREDICATE_TYPE": "AND_PREDICATE",
+                "PREDICATES": [{
+                    "PREDICATE": {
+                      "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                      "ATTRIBUTE_REFERENCE": {
+                        "COLUMN_NAME": "P_BRAND",
+                        "TABLE_NAME": "PART",
+                        "VERSION": 1
+                      },
+                      "PREDICATE_COMPARATOR": "EQUAL",
+                      "CONSTANT": {
+                        "CONSTANT_VALUE": "Brand#12",
+                        "CONSTANT_TYPE": "VARCHAR"
+                      }
+                    }
+                  },
+                  {
+                    "PREDICATE": {
+                      "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                      "ATTRIBUTE_REFERENCE": {
+                        "COLUMN_NAME": "P_SIZE",
+                        "TABLE_NAME": "PART",
+                        "VERSION": 1
+                      },
+                      "PREDICATE_COMPARATOR": "GREATER_EQUAL",
+                      "CONSTANT": {
+                        "CONSTANT_VALUE": "1",
+                        "CONSTANT_TYPE": "INT"
+                      }
+                    }
+                  },
+                  {
+                    "PREDICATE": {
+                      "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                      "ATTRIBUTE_REFERENCE": {
+                        "COLUMN_NAME": "P_SIZE",
+                        "TABLE_NAME": "PART",
+                        "VERSION": 1
+                      },
+                      "PREDICATE_COMPARATOR": "LESS_EQUAL",
+                      "CONSTANT": {
+                        "CONSTANT_VALUE": "5",
+                        "CONSTANT_TYPE": "INT"
+                      }
+                    }
+                  },
+                  {
+                    "PREDICATE": {
+                      "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                      "ATTRIBUTE_REFERENCE": {
+                        "COLUMN_NAME": "L_QUANTITY",
+                        "TABLE_NAME": "LINEITEM",
+                        "VERSION": 1
+                      },
+                      "PREDICATE_COMPARATOR": "GREATER_EQUAL",
+                      "CONSTANT": {
+                        "CONSTANT_VALUE": "1",
+                        "CONSTANT_TYPE": "INT"
+                      }
+                    }
+                  },
+                  {
+                    "PREDICATE": {
+                      "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                      "ATTRIBUTE_REFERENCE": {
+                        "COLUMN_NAME": "L_QUANTITY",
+                        "TABLE_NAME": "LINEITEM",
+                        "VERSION": 1
+                      },
+                      "PREDICATE_COMPARATOR": "LESS_EQUAL",
+                      "CONSTANT": {
+                        "CONSTANT_VALUE": "11",
+                        "CONSTANT_TYPE": "INT"
+                      }
+                    }
+                  },
+                  {
+                    "PREDICATE": {
+                      "PREDICATE_TYPE": "OR_PREDICATE",
+                      "PREDICATES": [{
+                          "PREDICATE": {
+                            "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                            "ATTRIBUTE_REFERENCE": {
+                              "COLUMN_NAME": "P_CONTAINER",
+                              "TABLE_NAME": "PART",
+                              "VERSION": 1
+                            },
+                            "PREDICATE_COMPARATOR": "EQUAL",
+                            "CONSTANT": {
+                              "CONSTANT_VALUE": "SM CASE",
+                              "CONSTANT_TYPE": "VARCHAR"
+                            }
+                          }
+                        },
+                        {
+                          "PREDICATE": {
+                            "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                            "ATTRIBUTE_REFERENCE": {
+                              "COLUMN_NAME": "P_CONTAINER",
+                              "TABLE_NAME": "PART",
+                              "VERSION": 1
+                            },
+                            "PREDICATE_COMPARATOR": "EQUAL",
+                            "CONSTANT": {
+                              "CONSTANT_VALUE": "SM BOX",
+                              "CONSTANT_TYPE": "VARCHAR"
+                            }
+                          }
+                        },
+                        {
+                          "PREDICATE": {
+                            "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                            "ATTRIBUTE_REFERENCE": {
+                              "COLUMN_NAME": "P_CONTAINER",
+                              "TABLE_NAME": "PART",
+                              "VERSION": 1
+                            },
+                            "PREDICATE_COMPARATOR": "EQUAL",
+                            "CONSTANT": {
+                              "CONSTANT_VALUE": "SM PACK",
+                              "CONSTANT_TYPE": "VARCHAR"
+                            }
+                          }
+                        },
+                        {
+                          "PREDICATE": {
+                            "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                            "ATTRIBUTE_REFERENCE": {
+                              "COLUMN_NAME": "P_CONTAINER",
+                              "TABLE_NAME": "PART",
+                              "VERSION": 1
+                            },
+                            "PREDICATE_COMPARATOR": "EQUAL",
+                            "CONSTANT": {
+                              "CONSTANT_VALUE": "SM PKG",
+                              "CONSTANT_TYPE": "VARCHAR"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+
+                ]
+              }
+
+            },
+            {
+
+              "PREDICATE": {
+                "PREDICATE_TYPE": "AND_PREDICATE",
+                "PREDICATES": [{
+                    "PREDICATE": {
+                      "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                      "ATTRIBUTE_REFERENCE": {
+                        "COLUMN_NAME": "P_BRAND",
+                        "TABLE_NAME": "PART",
+                        "VERSION": 1
+                      },
+                      "PREDICATE_COMPARATOR": "EQUAL",
+                      "CONSTANT": {
+                        "CONSTANT_VALUE": "Brand#23",
+                        "CONSTANT_TYPE": "VARCHAR"
+                      }
+                    }
+                  },
+                  {
+                    "PREDICATE": {
+                      "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                      "ATTRIBUTE_REFERENCE": {
+                        "COLUMN_NAME": "P_SIZE",
+                        "TABLE_NAME": "PART",
+                        "VERSION": 1
+                      },
+                      "PREDICATE_COMPARATOR": "GREATER_EQUAL",
+                      "CONSTANT": {
+                        "CONSTANT_VALUE": "1",
+                        "CONSTANT_TYPE": "INT"
+                      }
+                    }
+                  },
+                  {
+                    "PREDICATE": {
+                      "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                      "ATTRIBUTE_REFERENCE": {
+                        "COLUMN_NAME": "P_SIZE",
+                        "TABLE_NAME": "PART",
+                        "VERSION": 1
+                      },
+                      "PREDICATE_COMPARATOR": "LESS_EQUAL",
+                      "CONSTANT": {
+                        "CONSTANT_VALUE": "10",
+                        "CONSTANT_TYPE": "INT"
+                      }
+                    }
+                  },
+                  {
+                    "PREDICATE": {
+                      "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                      "ATTRIBUTE_REFERENCE": {
+                        "COLUMN_NAME": "L_QUANTITY",
+                        "TABLE_NAME": "LINEITEM",
+                        "VERSION": 1
+                      },
+                      "PREDICATE_COMPARATOR": "GREATER_EQUAL",
+                      "CONSTANT": {
+                        "CONSTANT_VALUE": "10",
+                        "CONSTANT_TYPE": "INT"
+                      }
+                    }
+                  },
+                  {
+                    "PREDICATE": {
+                      "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                      "ATTRIBUTE_REFERENCE": {
+                        "COLUMN_NAME": "L_QUANTITY",
+                        "TABLE_NAME": "LINEITEM",
+                        "VERSION": 1
+                      },
+                      "PREDICATE_COMPARATOR": "LESS_EQUAL",
+                      "CONSTANT": {
+                        "CONSTANT_VALUE": "20",
+                        "CONSTANT_TYPE": "INT"
+                      }
+                    }
+                  },
+                  {
+                    "PREDICATE": {
+                      "PREDICATE_TYPE": "OR_PREDICATE",
+                      "PREDICATES": [{
+                          "PREDICATE": {
+                            "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                            "ATTRIBUTE_REFERENCE": {
+                              "COLUMN_NAME": "P_CONTAINER",
+                              "TABLE_NAME": "PART",
+                              "VERSION": 1
+                            },
+                            "PREDICATE_COMPARATOR": "EQUAL",
+                            "CONSTANT": {
+                              "CONSTANT_VALUE": "MED BAG",
+                              "CONSTANT_TYPE": "VARCHAR"
+                            }
+                          }
+                        },
+                        {
+                          "PREDICATE": {
+                            "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                            "ATTRIBUTE_REFERENCE": {
+                              "COLUMN_NAME": "P_CONTAINER",
+                              "TABLE_NAME": "PART",
+                              "VERSION": 1
+                            },
+                            "PREDICATE_COMPARATOR": "EQUAL",
+                            "CONSTANT": {
+                              "CONSTANT_VALUE": "MED BOX",
+                              "CONSTANT_TYPE": "VARCHAR"
+                            }
+                          }
+                        },
+                        {
+                          "PREDICATE": {
+                            "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                            "ATTRIBUTE_REFERENCE": {
+                              "COLUMN_NAME": "P_CONTAINER",
+                              "TABLE_NAME": "PART",
+                              "VERSION": 1
+                            },
+                            "PREDICATE_COMPARATOR": "EQUAL",
+                            "CONSTANT": {
+                              "CONSTANT_VALUE": "MED PACK",
+                              "CONSTANT_TYPE": "VARCHAR"
+                            }
+                          }
+                        },
+                        {
+                          "PREDICATE": {
+                            "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                            "ATTRIBUTE_REFERENCE": {
+                              "COLUMN_NAME": "P_CONTAINER",
+                              "TABLE_NAME": "PART",
+                              "VERSION": 1
+                            },
+                            "PREDICATE_COMPARATOR": "EQUAL",
+                            "CONSTANT": {
+                              "CONSTANT_VALUE": "MED PKG",
+                              "CONSTANT_TYPE": "VARCHAR"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+
+                ]
+              }
+
+            },
+            {
+
+              "PREDICATE": {
+                "PREDICATE_TYPE": "AND_PREDICATE",
+                "PREDICATES": [{
+                    "PREDICATE": {
+                      "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                      "ATTRIBUTE_REFERENCE": {
+                        "COLUMN_NAME": "P_BRAND",
+                        "TABLE_NAME": "PART",
+                        "VERSION": 1
+                      },
+                      "PREDICATE_COMPARATOR": "EQUAL",
+                      "CONSTANT": {
+                        "CONSTANT_VALUE": "Brand#34",
+                        "CONSTANT_TYPE": "VARCHAR"
+                      }
+                    }
+                  },
+                  {
+                    "PREDICATE": {
+                      "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                      "ATTRIBUTE_REFERENCE": {
+                        "COLUMN_NAME": "P_SIZE",
+                        "TABLE_NAME": "PART",
+                        "VERSION": 1
+                      },
+                      "PREDICATE_COMPARATOR": "GREATER_EQUAL",
+                      "CONSTANT": {
+                        "CONSTANT_VALUE": "1",
+                        "CONSTANT_TYPE": "INT"
+                      }
+                    }
+                  },
+                  {
+                    "PREDICATE": {
+                      "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                      "ATTRIBUTE_REFERENCE": {
+                        "COLUMN_NAME": "P_SIZE",
+                        "TABLE_NAME": "PART",
+                        "VERSION": 1
+                      },
+                      "PREDICATE_COMPARATOR": "LESS_EQUAL",
+                      "CONSTANT": {
+                        "CONSTANT_VALUE": "15",
+                        "CONSTANT_TYPE": "INT"
+                      }
+                    }
+                  },
+                  {
+                    "PREDICATE": {
+                      "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                      "ATTRIBUTE_REFERENCE": {
+                        "COLUMN_NAME": "L_QUANTITY",
+                        "TABLE_NAME": "LINEITEM",
+                        "VERSION": 1
+                      },
+                      "PREDICATE_COMPARATOR": "GREATER_EQUAL",
+                      "CONSTANT": {
+                        "CONSTANT_VALUE": "20",
+                        "CONSTANT_TYPE": "INT"
+                      }
+                    }
+                  },
+                  {
+                    "PREDICATE": {
+                      "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                      "ATTRIBUTE_REFERENCE": {
+                        "COLUMN_NAME": "L_QUANTITY",
+                        "TABLE_NAME": "LINEITEM",
+                        "VERSION": 1
+                      },
+                      "PREDICATE_COMPARATOR": "LESS_EQUAL",
+                      "CONSTANT": {
+                        "CONSTANT_VALUE": "30",
+                        "CONSTANT_TYPE": "INT"
+                      }
+                    }
+                  },
+                  {
+                    "PREDICATE": {
+                      "PREDICATE_TYPE": "OR_PREDICATE",
+                      "PREDICATES": [{
+                          "PREDICATE": {
+                            "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                            "ATTRIBUTE_REFERENCE": {
+                              "COLUMN_NAME": "P_CONTAINER",
+                              "TABLE_NAME": "PART",
+                              "VERSION": 1
+                            },
+                            "PREDICATE_COMPARATOR": "EQUAL",
+                            "CONSTANT": {
+                              "CONSTANT_VALUE": "LG CASE",
+                              "CONSTANT_TYPE": "VARCHAR"
+                            }
+                          }
+                        },
+                        {
+                          "PREDICATE": {
+                            "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                            "ATTRIBUTE_REFERENCE": {
+                              "COLUMN_NAME": "P_CONTAINER",
+                              "TABLE_NAME": "PART",
+                              "VERSION": 1
+                            },
+                            "PREDICATE_COMPARATOR": "EQUAL",
+                            "CONSTANT": {
+                              "CONSTANT_VALUE": "LG BOX",
+                              "CONSTANT_TYPE": "VARCHAR"
+                            }
+                          }
+                        },
+                        {
+                          "PREDICATE": {
+                            "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                            "ATTRIBUTE_REFERENCE": {
+                              "COLUMN_NAME": "P_CONTAINER",
+                              "TABLE_NAME": "PART",
+                              "VERSION": 1
+                            },
+                            "PREDICATE_COMPARATOR": "EQUAL",
+                            "CONSTANT": {
+                              "CONSTANT_VALUE": "LG PACK",
+                              "CONSTANT_TYPE": "VARCHAR"
+                            }
+                          }
+                        },
+                        {
+                          "PREDICATE": {
+                            "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                            "ATTRIBUTE_REFERENCE": {
+                              "COLUMN_NAME": "P_CONTAINER",
+                              "TABLE_NAME": "PART",
+                              "VERSION": 1
+                            },
+                            "PREDICATE_COMPARATOR": "EQUAL",
+                            "CONSTANT": {
+                              "CONSTANT_VALUE": "LG PKG",
+                              "CONSTANT_TYPE": "VARCHAR"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+
+                ]
+              }
+
+            }
+          ]
+        },
+        "RIGHT_CHILD": null,
+        "LEFT_CHILD": {
+          "OPERATOR_NAME": "GENERIC_JOIN",
+          "JOIN_TYPE": "INNER_JOIN",
+          "PREDICATE": {
+            "PREDICATE_TYPE": "AND_PREDICATE",
+            "PREDICATES": [{
+              "PREDICATE": {
+                "PREDICATE_TYPE": "COLUMN_COLUMN_PREDICATE",
+                "LEFT_HAND_SIDE_ATTRIBUTE_REFERENCE": {
+                  "COLUMN_NAME": "P_PARTKEY",
+                  "TABLE_NAME": "PART",
+                  "VERSION": 1
+                },
+                "PREDICATE_COMPARATOR": "EQUAL",
+                "RIGHT_HAND_SIDE_ATTRIBUTE_REFERENCE": {
+                  "COLUMN_NAME": "L_PARTKEY",
+                  "TABLE_NAME": "LINEITEM",
+                  "VERSION": 1
+                }
+              }
+            }]
+          },
+          "LEFT_CHILD": {
+            "OPERATOR_NAME": "GENERIC_SELECTION",
+            "PREDICATE": {
+              "PREDICATE_TYPE": "AND_PREDICATE",
+              "PREDICATES": [{
+                  "PREDICATE": {
+                    "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                    "ATTRIBUTE_REFERENCE": {
+                      "COLUMN_NAME": "P_SIZE",
+                      "TABLE_NAME": "PART",
+                      "VERSION": 1
+                    },
+                    "PREDICATE_COMPARATOR": "GREATER_EQUAL",
+                    "CONSTANT": {
+                      "CONSTANT_VALUE": "1",
+                      "CONSTANT_TYPE": "INT"
+                    }
+                  }
+                },
+                {
+                  "PREDICATE": {
+                    "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                    "ATTRIBUTE_REFERENCE": {
+                      "COLUMN_NAME": "P_SIZE",
+                      "TABLE_NAME": "PART",
+                      "VERSION": 1
+                    },
+                    "PREDICATE_COMPARATOR": "LESS_EQUAL",
+                    "CONSTANT": {
+                      "CONSTANT_VALUE": "15",
+                      "CONSTANT_TYPE": "INT"
+                    }
+                  }
+                },
+                {
+                  "PREDICATE": {
+                    "PREDICATE_TYPE": "OR_PREDICATE",
+                    "PREDICATES": [{
+                        "PREDICATE": {
+                          "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                          "ATTRIBUTE_REFERENCE": {
+                            "COLUMN_NAME": "P_BRAND",
+                            "TABLE_NAME": "PART",
+                            "VERSION": 1
+                          },
+                          "PREDICATE_COMPARATOR": "EQUAL",
+                          "CONSTANT": {
+                            "CONSTANT_VALUE": "Brand#12",
+                            "CONSTANT_TYPE": "VARCHAR"
+                          }
+                        }
+                      },
+                      {
+                        "PREDICATE": {
+                          "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                          "ATTRIBUTE_REFERENCE": {
+                            "COLUMN_NAME": "P_BRAND",
+                            "TABLE_NAME": "PART",
+                            "VERSION": 1
+                          },
+                          "PREDICATE_COMPARATOR": "EQUAL",
+                          "CONSTANT": {
+                            "CONSTANT_VALUE": "Brand#23",
+                            "CONSTANT_TYPE": "VARCHAR"
+                          }
+                        }
+                      },
+                      {
+                        "PREDICATE": {
+                          "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                          "ATTRIBUTE_REFERENCE": {
+                            "COLUMN_NAME": "P_BRAND",
+                            "TABLE_NAME": "PART",
+                            "VERSION": 1
+                          },
+                          "PREDICATE_COMPARATOR": "EQUAL",
+                          "CONSTANT": {
+                            "CONSTANT_VALUE": "Brand#34",
+                            "CONSTANT_TYPE": "VARCHAR"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "RIGHT_CHILD": null,
+            "LEFT_CHILD": {
+              "OPERATOR_NAME": "TABLE_SCAN",
+              "TABLE_NAME": "PART",
+              "VERSION": 1
+            }
+          },
+          "RIGHT_CHILD": {
+            "OPERATOR_NAME": "GENERIC_SELECTION",
+            "PREDICATE": {
+              "PREDICATE_TYPE": "AND_PREDICATE",
+              "PREDICATES": [{
+                  "PREDICATE": {
+                    "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                    "ATTRIBUTE_REFERENCE": {
+                      "COLUMN_NAME": "L_SHIPINSTRUCT",
+                      "TABLE_NAME": "LINEITEM",
+                      "VERSION": 1
+                    },
+                    "PREDICATE_COMPARATOR": "EQUAL",
+                    "CONSTANT": {
+                      "CONSTANT_VALUE": "DELIVER IN PERSON",
+                      "CONSTANT_TYPE": "VARCHAR"
+                    }
+                  }
+                },
+                {
+                  "PREDICATE": {
+                    "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                    "ATTRIBUTE_REFERENCE": {
+                      "COLUMN_NAME": "L_QUANTITY",
+                      "TABLE_NAME": "LINEITEM",
+                      "VERSION": 1
+                    },
+                    "PREDICATE_COMPARATOR": "GREATER_EQUAL",
+                    "CONSTANT": {
+                      "CONSTANT_VALUE": "1",
+                      "CONSTANT_TYPE": "INT"
+                    }
+                  }
+                },
+                {
+                  "PREDICATE": {
+                    "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                    "ATTRIBUTE_REFERENCE": {
+                      "COLUMN_NAME": "L_QUANTITY",
+                      "TABLE_NAME": "LINEITEM",
+                      "VERSION": 1
+                    },
+                    "PREDICATE_COMPARATOR": "LESS_EQUAL",
+                    "CONSTANT": {
+                      "CONSTANT_VALUE": "30",
+                      "CONSTANT_TYPE": "INT"
+                    }
+                  }
+                },
+                {
+                  "PREDICATE": {
+                    "PREDICATE_TYPE": "COLUMN_CONSTANT_PREDICATE",
+                    "ATTRIBUTE_REFERENCE": {
+                      "COLUMN_NAME": "L_SHIPMODE",
+                      "TABLE_NAME": "LINEITEM",
+                      "VERSION": 1
+                    },
+                    "PREDICATE_COMPARATOR": "EQUAL",
+                    "CONSTANT": {
+                      "CONSTANT_VALUE": "AIR",
+                      "CONSTANT_TYPE": "VARCHAR"
+                    }
+                  }
+                }
+              ]
+            },
+            "RIGHT_CHILD": null,
+            "LEFT_CHILD": {
+              "OPERATOR_NAME": "TABLE_SCAN",
+              "TABLE_NAME": "LINEITEM",
+              "VERSION": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

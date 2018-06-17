@@ -1,0 +1,6 @@
+set code_gen.opt.ocl_grouped_aggregation.hack.enable_manual_ht_size=true
+set code_gen.opt.ocl_grouped_aggregation.hack.ht_size=2000
+set default_hash_table=ocl_linear_probing
+set bench.exploration.querytype=grouped_aggregation_with_join
+ssb42
+set code_gen.opt.ocl_grouped_aggregation.hack.enable_manual_ht_size=false

@@ -1,0 +1,6 @@
+set bench.exploration.querytype=grouped_aggregation
+set code_gen.opt.ocl_grouped_aggregation.hack.enable_manual_ht_size=true
+set code_gen.opt.ocl_grouped_aggregation.hack.ht_size=100
+select lo_shipmode, sum(lo_quantity) from lineorder group by lo_shipmode;
+
+set code_gen.opt.ocl_grouped_aggregation.hack.enable_manual_ht_size=false

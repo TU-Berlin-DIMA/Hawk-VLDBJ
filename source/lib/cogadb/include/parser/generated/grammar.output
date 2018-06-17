@@ -1,0 +1,253 @@
+
+Production Rules
+(rule precedences determined from %prec or 1st terminal between parentheses):
+1: input ->  <empty>
+2: input ->  input line
+3: line ('\x0a') ->  '\x0a'
+4: line ('\x0a') ->  exp '\x0a'
+5: exp (NUM) ->  NUM
+6: exp ('+') ->  exp '+' exp
+7: exp ('-') ->  exp '-' exp
+8: exp ('*') ->  exp '*' exp
+9: exp ('/') ->  exp '/' exp
+10: exp (NEG) ->  '-' exp
+11: exp ('^') ->  exp '^' exp
+12: exp ('(') ->  '(' exp ')'
+13: input_$ ->  input
+
+
+Symbolic Terminal tokens:
+       error
+       EOF
+   257: NUM
+    45: '-'
+    43: '+'
+    42: '*'
+    47: '/'
+   258: NEG
+    94: '^'
+    10: '\x0a'
+    40: '('
+    41: ')'
+
+
+Grammar States: 
+State 0:
+13: input_$ ->  . input 
+  0:   On input to state 1
+  Reduce by 1: input ->  . 
+
+
+State 1:
+13: input_$ -> input  . 
+2: input -> input  . line 
+  0:   On line to state 2
+  1:   On '\x0a' to state 3
+  2:   On exp to state 4
+  3:   On NUM to state 5
+  4:   On '-' to state 6
+  5:   On '(' to state 7
+
+
+State 2:
+2: input -> input line  . 
+  Reduce by 2: input -> input line  . 
+
+
+State 3:
+3: line -> '\x0a'  . 
+  Reduce by 3: line -> '\x0a'  . 
+
+
+State 4:
+4: line -> exp  . '\x0a' 
+6: exp -> exp  . '+' exp 
+7: exp -> exp  . '-' exp 
+8: exp -> exp  . '*' exp 
+9: exp -> exp  . '/' exp 
+11: exp -> exp  . '^' exp 
+  0:   On '\x0a' to state 8
+  1:   On '+' to state 9
+  2:   On '-' to state 10
+  3:   On '*' to state 11
+  4:   On '/' to state 12
+  5:   On '^' to state 13
+
+
+State 5:
+5: exp -> NUM  . 
+  Reduce by 5: exp -> NUM  . 
+
+
+State 6:
+10: exp -> '-'  . exp 
+  0:   On exp to state 14
+  1:   On NUM to state 5
+  2:   On '-' to state 6
+  3:   On '(' to state 7
+
+
+State 7:
+12: exp -> '('  . exp ')' 
+  0:   On exp to state 15
+  1:   On NUM to state 5
+  2:   On '-' to state 6
+  3:   On '(' to state 7
+
+
+State 8:
+4: line -> exp '\x0a'  . 
+  Reduce by 4: line -> exp '\x0a'  . 
+
+
+State 9:
+6: exp -> exp '+'  . exp 
+  0:   On exp to state 16
+  1:   On NUM to state 5
+  2:   On '-' to state 6
+  3:   On '(' to state 7
+
+
+State 10:
+7: exp -> exp '-'  . exp 
+  0:   On exp to state 17
+  1:   On NUM to state 5
+  2:   On '-' to state 6
+  3:   On '(' to state 7
+
+
+State 11:
+8: exp -> exp '*'  . exp 
+  0:   On exp to state 18
+  1:   On NUM to state 5
+  2:   On '-' to state 6
+  3:   On '(' to state 7
+
+
+State 12:
+9: exp -> exp '/'  . exp 
+  0:   On exp to state 19
+  1:   On NUM to state 5
+  2:   On '-' to state 6
+  3:   On '(' to state 7
+
+
+State 13:
+11: exp -> exp '^'  . exp 
+  0:   On exp to state 20
+  1:   On NUM to state 5
+  2:   On '-' to state 6
+  3:   On '(' to state 7
+
+
+State 14:
+10: exp -> '-' exp  . 
+6: exp -> exp  . '+' exp 
+7: exp -> exp  . '-' exp 
+8: exp -> exp  . '*' exp 
+9: exp -> exp  . '/' exp 
+11: exp -> exp  . '^' exp 
+  0 (removed by precedence):   On '+' to state 9
+  1 (removed by precedence):   On '-' to state 10
+  2 (removed by precedence):   On '*' to state 11
+  3 (removed by precedence):   On '/' to state 12
+  4:   On '^' to state 13
+  Reduce by 10: exp -> '-' exp  . 
+
+
+State 15:
+12: exp -> '(' exp  . ')' 
+6: exp -> exp  . '+' exp 
+7: exp -> exp  . '-' exp 
+8: exp -> exp  . '*' exp 
+9: exp -> exp  . '/' exp 
+11: exp -> exp  . '^' exp 
+  0:   On ')' to state 21
+  1:   On '+' to state 9
+  2:   On '-' to state 10
+  3:   On '*' to state 11
+  4:   On '/' to state 12
+  5:   On '^' to state 13
+
+
+State 16:
+6: exp -> exp '+' exp  . 
+6: exp -> exp  . '+' exp 
+7: exp -> exp  . '-' exp 
+8: exp -> exp  . '*' exp 
+9: exp -> exp  . '/' exp 
+11: exp -> exp  . '^' exp 
+  0 (removed by precedence):   On '+' to state 9
+  1 (removed by precedence):   On '-' to state 10
+  2:   On '*' to state 11
+  3:   On '/' to state 12
+  4:   On '^' to state 13
+  Reduce by 6: exp -> exp '+' exp  . 
+
+
+State 17:
+7: exp -> exp '-' exp  . 
+6: exp -> exp  . '+' exp 
+7: exp -> exp  . '-' exp 
+8: exp -> exp  . '*' exp 
+9: exp -> exp  . '/' exp 
+11: exp -> exp  . '^' exp 
+  0 (removed by precedence):   On '+' to state 9
+  1 (removed by precedence):   On '-' to state 10
+  2:   On '*' to state 11
+  3:   On '/' to state 12
+  4:   On '^' to state 13
+  Reduce by 7: exp -> exp '-' exp  . 
+
+
+State 18:
+8: exp -> exp '*' exp  . 
+6: exp -> exp  . '+' exp 
+7: exp -> exp  . '-' exp 
+8: exp -> exp  . '*' exp 
+9: exp -> exp  . '/' exp 
+11: exp -> exp  . '^' exp 
+  0 (removed by precedence):   On '+' to state 9
+  1 (removed by precedence):   On '-' to state 10
+  2 (removed by precedence):   On '*' to state 11
+  3 (removed by precedence):   On '/' to state 12
+  4:   On '^' to state 13
+  Reduce by 8: exp -> exp '*' exp  . 
+
+
+State 19:
+9: exp -> exp '/' exp  . 
+6: exp -> exp  . '+' exp 
+7: exp -> exp  . '-' exp 
+8: exp -> exp  . '*' exp 
+9: exp -> exp  . '/' exp 
+11: exp -> exp  . '^' exp 
+  0 (removed by precedence):   On '+' to state 9
+  1 (removed by precedence):   On '-' to state 10
+  2 (removed by precedence):   On '*' to state 11
+  3 (removed by precedence):   On '/' to state 12
+  4:   On '^' to state 13
+  Reduce by 9: exp -> exp '/' exp  . 
+
+
+State 20:
+11: exp -> exp '^' exp  . 
+6: exp -> exp  . '+' exp 
+7: exp -> exp  . '-' exp 
+8: exp -> exp  . '*' exp 
+9: exp -> exp  . '/' exp 
+11: exp -> exp  . '^' exp 
+  0 (removed by precedence):   On '+' to state 9
+  1 (removed by precedence):   On '-' to state 10
+  2 (removed by precedence):   On '*' to state 11
+  3 (removed by precedence):   On '/' to state 12
+  4:   On '^' to state 13
+  Reduce by 11: exp -> exp '^' exp  . 
+
+
+State 21:
+12: exp -> '(' exp ')'  . 
+  Reduce by 12: exp -> '(' exp ')'  . 
+
+
+

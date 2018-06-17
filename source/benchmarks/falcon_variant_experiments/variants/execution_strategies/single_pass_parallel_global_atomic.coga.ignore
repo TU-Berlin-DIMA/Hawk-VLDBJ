@@ -1,0 +1,3 @@
+set code_gen.pipe_exec_strategy=parallel_global_atomic_single_pass
+#number of parallel running pipelines should be one
+set code_gen.num_threads=1

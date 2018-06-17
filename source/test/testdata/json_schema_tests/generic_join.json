@@ -1,0 +1,35 @@
+{
+    "QUERY_PLAN":{
+        "OPERATOR_NAME":"GENERIC_JOIN",
+        "JOIN_TYPE":"INNER_JOIN",
+        "PREDICATE":{
+            "PREDICATE_TYPE":"AND_PREDICATE",
+            "PREDICATES":[{
+                "PREDICATE":{
+                    "PREDICATE_TYPE":"COLUMN_COLUMN_PREDICATE",
+                    "LEFT_HAND_SIDE_ATTRIBUTE_REFERENCE":{
+                        "COLUMN_NAME":"D_DATEKEY",
+                        "TABLE_NAME":"DATES",
+                        "VERSION":1,
+                        "RESULT_NAME":"D_DATEKEY"
+                    },
+                    "PREDICATE_COMPARATOR":"EQUAL",
+                    "RIGHT_HAND_SIDE_ATTRIBUTE_REFERENCE":{
+                        "COLUMN_NAME":"LO_ORDERDATE",
+                        "TABLE_NAME":"LINEORDER",
+                        "VERSION":1,
+                        "RESULT_NAME":"LO_ORDERDATE"
+                    }
+                }
+            }]
+        },
+        "LEFT_CHILD":{
+            "OPERATOR_NAME":"TABLE_SCAN",
+            "TABLE_NAME":"DATES"
+        },
+        "RIGHT_CHILD":{
+            "OPERATOR_NAME":"TABLE_SCAN",
+            "TABLE_NAME":"LINEORDER"
+        }
+    }
+}

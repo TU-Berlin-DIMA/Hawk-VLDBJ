@@ -1,0 +1,361 @@
+/***********************************************************************************************************
+Copyright (c) 2012, Sebastian Breß, Otto-von-Guericke University of Magdeburg, Germany. All rights reserved.
+
+This program and accompanying materials are made available under the terms of the 
+GNU LESSER GENERAL PUBLIC LICENSE - Version 3, http://www.gnu.org/licenses/lgpl-3.0.txt
+***********************************************************************************************************/
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <numeric>
+
+#include <boost/circular_buffer.hpp>
+#include <boost/tokenizer.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/lexical_cast.hpp>
+
+#include <core/operation.hpp>
+#include <core/time_measurement.hpp>
+#include <core/measurementpair.hpp>
+#include <core/plotscriptgenerator.hpp>
+#include <core/scheduler.hpp>
+#include <core/offline_algorithm.hpp>
+#include <core/workload_generator.hpp>
+#include <core/statistics_gatherer.hpp>
+#include <boost/lexical_cast.hpp>
+
+#ifdef DUMP_ESTIMATIONS
+	#include <fstream>
+#endif
+
+
+using namespace std;
+
+namespace hype{
+	namespace core{
+
+	unsigned int& getWorkloadID(){
+		static unsigned int workload_id=0;
+		return workload_id;
+	}
+
+
+	WorkloadGenerator::WorkloadGenerator(const std::string& operation_name) : operation_name_(operation_name),
+																			 number_of_right_decisions_(0), 
+																			 number_of_total_decisions_(0),
+																			 offline_algorithms(),
+																			 isolated_execution_time_of_algorithms_(),
+																			 logfile(),
+																			 execution_time_of_ideal_model_(0),
+																			 execution_time_of_cpu_only_model_(0),
+																			 execution_time_of_gpu_only_model_(0),
+																			 execution_time_of_real_model_(0),
+																			 total_time_for_overhead_of_addObservation_(0),
+																			 total_time_for_overhead_of_getOptimalAlgorithm_(0),
+																			 execution_history_(),
+																			 //Feature: inter device parallelism
+																			 inter_device_parallel_time_cpu_(0),
+																			 inter_device_parallel_time_gpu_(0)	
+	{
+
+		std::string file_name = std::string("output/")+operation_name_+std::string(".log");
+		logfile.open(file_name.c_str(),std::fstream::out);
+		
+	}
+
+	WorkloadGenerator::~WorkloadGenerator(){
+		logfile.close();
+		//make sure, there is something to plot:
+		assert(!execution_history_.empty());
+
+		double execution_time_of_real_model_with_overhead = execution_time_of_real_model_;
+				 execution_time_of_real_model_with_overhead += total_time_for_overhead_of_addObservation_; 
+				 execution_time_of_real_model_with_overhead += total_time_for_overhead_of_getOptimalAlgorithm_;
+
+		std::cout << "Workload " << getWorkloadID() << " Report: " << std::endl
+			  << "Number of correct decisions: " << number_of_right_decisions_ << "   "
+			  << "Number of total decisions: " << number_of_total_decisions_ << std::endl
+			  << "Execution time for workload of ideal model: " << execution_time_of_ideal_model_  << "ns" << std::endl
+			  //<< "Execution time for workload of cpu only model: " << execution_time_of_cpu_only_model_  << "ns" << std::endl
+			  //<< "Execution time for workload of gpu only model: " << execution_time_of_gpu_only_model_  << "ns" << std::endl
+			  << "Execution time for workload of real model (without overhead): " << execution_time_of_real_model_  << "ns (model quality: " 
+			  << execution_time_of_ideal_model_/execution_time_of_real_model_ << ")" << std::endl
+			  << "Execution time for workload of real model (with overhead): " << execution_time_of_real_model_with_overhead  << "ns (model quality: " 
+			  << execution_time_of_ideal_model_/execution_time_of_real_model_with_overhead << ")" << std::endl
+			  << "Overhead time for workload of real model (addObservation): " << total_time_for_overhead_of_addObservation_  << "ns" << std::endl
+			  << "Overhead time for workload of real model (getOptimalAlgorithm): " << total_time_for_overhead_of_getOptimalAlgorithm_  << "ns" << std::endl
+			  << std::endl;
+
+		//Feature: inter device parallelism
+		std::cout << "Execution Time CPU: " << inter_device_parallel_time_cpu_ << "ns" << std::endl;
+		std::cout << "Execution Time GPU: " << inter_device_parallel_time_gpu_ << "ns" << std::endl;
+
+		double response_time_with_inter_device_parallelism=std::max(inter_device_parallel_time_cpu_, inter_device_parallel_time_gpu_);
+		response_time_with_inter_device_parallelism+=execution_time_of_real_model_with_overhead;
+		
+		assert(offline_algorithms.size()==isolated_execution_time_of_algorithms_.size());
+		for(unsigned int i=0;i<offline_algorithms.size();i++){
+			std::cout << "Execution time for workload for model that uses only algorithm " << offline_algorithms[i].getAlgorithmName() << ": "
+					    << isolated_execution_time_of_algorithms_[i] << "ns (model quality: " << execution_time_of_ideal_model_/isolated_execution_time_of_algorithms_[i] 
+						 << ")" << std::endl;
+			//Feature: inter device parallelism
+			//if(offline_algorithms[i].getComputeDevice==CPU)
+			std::cout << "Speedup compared to Algorithm " << offline_algorithms[i].getAlgorithmName()  << ": " << isolated_execution_time_of_algorithms_[i]/response_time_with_inter_device_parallelism << std::endl;			
+		}
+
+		
+
+		
+		std::string dir_name="output/";
+		dir_name+=operation_name_;
+		dir_name+="/";
+
+		if(!boost::filesystem::create_directory(dir_name))
+			std::cout << "Directory '" << dir_name << "' already exists!" << std::endl;
+
+		dir_name+="input_files_workload_nr_";
+		dir_name+=boost::lexical_cast<std::string>(getWorkloadID()++);
+		//dir_name+="/";
+
+		if(!boost::filesystem::create_directory(dir_name))
+			std::cout << "Directory '" << dir_name << "' already exists!" << std::endl;
+	
+
+
+
+		//dir_name+=algorithm_name;
+	
+		//if(!boost::filesystem::create_directory(dir_name));
+		//	std::cout << "Directory '" << dir_name << "' already exists!" << std::endl;
+
+
+		std::string basic_file_name=dir_name+"/";
+		//basic_file_name+=algorithm_name;
+	
+		for(unsigned int i=0;i<offline_algorithms.size();i++){
+			std::string file_name=basic_file_name+offline_algorithms[i].getAlgorithmName()+".data";
+			offline_algorithms[i].storeInFile(file_name);
+
+			//fstream file(file_name_measurement_pairs.c_str(),std::ios_base::out | std::ios_base::trunc);
+			//executionHistory_.store(file);
+		}
+		
+		std::string file_name = basic_file_name+std::string("complete_execution_history.data");
+		std::fstream file(file_name.c_str(),std::fstream::out);
+		std::cout << "create File: " << file_name << std::endl;
+		for(unsigned int i=0;i<execution_history_.size();i++){	
+			file << execution_history_[i].toPlainString() << std::endl;
+		}
+		
+		std::vector<std::string> algorithm_names;
+		for(unsigned int i=0;i<offline_algorithms.size();i++){	
+			algorithm_names.push_back(offline_algorithms[i].getAlgorithmName());
+		}
+		if(execution_history_[0].getFeatureValues().size()==2){
+	   	PlotScriptGenerator::create_3d_plot(operation_name_, "datasize", "selectivity", dir_name, algorithm_names);
+	   }
+		//offline_algorithms
+	}
+
+	bool WorkloadGenerator::addOffline_Algorithm(const Offline_Algorithm& meas_pair_prov){ 
+		std::cout << operation_name_ << "	" << meas_pair_prov.getOperationName() << std::endl;
+		offline_algorithms.push_back(meas_pair_prov);
+		isolated_execution_time_of_algorithms_.push_back(0); //init total execution time
+		assert(operation_name_==meas_pair_prov.getOperationName());
+
+		Scheduler::instance().addAlgorithm(meas_pair_prov.getOperationName(),meas_pair_prov.getAlgorithmName(),meas_pair_prov.getComputeDevice(),"Least Squares 1D","Periodic Recomputation");
+		//Scheduler::instance().addAlgorithm(meas_pair_prov.getOperationName(),meas_pair_prov.getAlgorithmName(),"Least Squares 1D","Oneshot Recomputation");		
+		
+		return true;
+	}
+
+	void WorkloadGenerator::shuffleWorkload(){
+
+		this->offline_algorithms=Offline_Algorithm::randomize_dataset_of_offline_algorithms(this->offline_algorithms);
+		
+	}
+
+	void WorkloadGenerator::reset(){
+		for(unsigned int i=0;i<offline_algorithms.size();i++){
+			this->offline_algorithms[i].reset();
+		}
+	}
+		
+	void WorkloadGenerator::run(){
+		assert(!offline_algorithms.empty());
+		
+		unsigned int iterations=offline_algorithms[0].getNumberOfMeasurementPairs();
+		for(unsigned int i=0;i<offline_algorithms.size();i++){
+			assert(offline_algorithms[i].getNumberOfMeasurementPairs()==iterations);	//ensure all algorithms have same number of measurement pairs	
+		}	
+		
+		for(unsigned int i=0;i<iterations;i++){
+			nextIteration();
+		}
+
+	}
+		
+	void WorkloadGenerator::nextIteration(){
+
+		assert(!offline_algorithms.empty());
+	
+		std::vector<core::MeasurementPair> mps(offline_algorithms.size());
+		for(unsigned int i=0;i<offline_algorithms.size();i++){
+			if(offline_algorithms[i].hasNext()){
+				mps[i]=offline_algorithms[i].getNext();
+				assert(mps[i].getFeatureValues().size()>0);
+				//following assertion is not needed, sicne different algorithms ma
+				//assert(mps[0].getFeatureValues()==mps[i].getFeatureValues()); //check for consistency
+			}else{
+				std::cout << "Fatal Error: Algorithm '" << offline_algorithms[i].getAlgorithmName() << "' has no more measurement pairs!!!" << std::endl;
+				std::exit(-1);
+			}
+		}			
+
+			#ifdef DUMP_ESTIMATIONS
+			static unsigned int counter=0;
+//			double real_speedup;
+//			double estimated_speedup;
+			MeasurementPair cpu_mp;
+			MeasurementPair gpu_mp;
+			if(counter++>= (hype::core::Configuration::length_of_initial_training_phase+1) * offline_algorithms.size()){
+			for(unsigned int i=0;i<offline_algorithms.size();++i){
+
+				if(offline_algorithms[i].getComputeDevice()==hype::GPU){
+					AlgorithmPtr alg = Scheduler::instance().getAlgorithm(offline_algorithms[i].getAlgorithmName());
+					assert(!alg->inTrainingPhase());
+					gpu_mp=MeasurementPair(mps[i].getFeatureValues(),mps[i].getMeasuredTime(),alg->getEstimatedExecutionTime(mps[i].getFeatureValues())) ;
+					
+					//cpu_mp=mps[i];
+				}else if (offline_algorithms[i].getComputeDevice()==hype::CPU){
+					AlgorithmPtr alg = Scheduler::instance().getAlgorithm(offline_algorithms[i].getAlgorithmName());
+					assert(!alg->inTrainingPhase());
+					cpu_mp=MeasurementPair(mps[i].getFeatureValues(),mps[i].getMeasuredTime(),alg->getEstimatedExecutionTime(mps[i].getFeatureValues())) ;
+					
+					//gpu_mp=mps[i];
+				}
+			}
+				double length_of_training=hype::core::Configuration::length_of_initial_training_phase;
+				std::string path = "output/";
+				path+=this->operation_name_+"/";
+				path+="Traininglength_";
+				path+=boost::lexical_cast<std::string>(length_of_training) +".speedups";
+				
+				fstream file(path.c_str(),fstream::out | fstream::app);
+/*				AlgorithmPtr alg = Scheduler::instance().getAlgorithm(offline_algorithms[i].getAlgorithmName());
+				assert(!alg->inTrainingPhase());
+				MeasurementPair mp(mps[i].getFeatureValues(),mps[i].getMeasuredTime(),alg->getEstimatedExecutionTime(mps[i].getFeatureValues())) ;
+				file << mp.toPlainString();
+				file<< */
+				//file << "\t" << (mp.getMeasuredTime().getTimeinNanoseconds()-mp.getEstimatedTime().getTimeinNanoseconds())/mp.getMeasuredTime().getTimeinNanoseconds() << "\t" << offline_algorithms[i].getAlgorithmName() << endl;
+
+				double real_speedup=cpu_mp.getMeasuredTime().getTimeinNanoseconds()/gpu_mp.getMeasuredTime().getTimeinNanoseconds() ;
+				double estimated_speedup=cpu_mp.getEstimatedTime().getTimeinNanoseconds()/gpu_mp.getEstimatedTime().getTimeinNanoseconds();
+				double relative_error= (cpu_mp.getMeasuredTime().getTimeinNanoseconds()-cpu_mp.getEstimatedTime().getTimeinNanoseconds())/cpu_mp.getEstimatedTime().getTimeinNanoseconds();
+				file << cpu_mp.toPlainString() ; //<< "\t" << (mp.getMeasuredTime().getTimeinNanoseconds()-mp.getEstimatedTime().getTimeinNanoseconds())/mp.getMeasuredTime().getTimeinNanoseconds() 
+				file << "\t" << estimated_speedup 
+					<< "\t" << real_speedup
+					<< "\t" << (real_speedup-estimated_speedup)  // (cpu_mp.getMeasuredTime().getTimeinNanoseconds()/gpu_mp.getMeasuredTime().getTimeinNanoseconds())-(cpu_mp.getEstimatedTime().getTimeinNanoseconds()/gpu_mp.getEstimatedTime().getTimeinNanoseconds())
+					<< "\t" << cpu_mp.getMeasuredTime().getTimeinNanoseconds()-cpu_mp.getEstimatedTime().getTimeinNanoseconds()
+					<< "\t" << fabs(relative_error)
+					<< endl;
+				file.close();
+			//}
+			}
+			#endif
+
+		
+		Tuple feature_values = mps[0].getFeatureValues();
+			
+		uint64_t timestamp_begin_scheduling_decision = getTimestamp();
+		//get optimal algorithm w.r.t. optimization criterion
+		SchedulingDecision sched_dec = Scheduler::instance().getOptimalAlgorithmName(operation_name_,feature_values);	
+		uint64_t timestamp_end_scheduling_decision = getTimestamp();			
+		assert(timestamp_end_scheduling_decision>timestamp_begin_scheduling_decision);
+		if(!quiet)
+			std::cout << "Time for Scheduling Decision: "<< timestamp_end_scheduling_decision-timestamp_begin_scheduling_decision << "ns"<< std::endl;
+		//update statistics
+		total_time_for_overhead_of_getOptimalAlgorithm_+=timestamp_end_scheduling_decision-timestamp_begin_scheduling_decision;
+
+		//get optimal algorithm for this operation
+		double min=std::numeric_limits<double>::max();
+		std::string name_of_fastest_algorithm;
+		for(unsigned int i=0;i<offline_algorithms.size();i++){
+			if(min>mps[i].getMeasuredTime().getTimeinNanoseconds()){
+				min=mps[i].getMeasuredTime().getTimeinNanoseconds();
+				name_of_fastest_algorithm=offline_algorithms[i].getAlgorithmName();				
+			}
+			//update algorithms total execution tiems (used to model static decision models)  
+			isolated_execution_time_of_algorithms_[i]+=mps[i].getMeasuredTime().getTimeinNanoseconds();
+		}		
+		//update statistics
+		execution_time_of_ideal_model_+=min;
+
+
+		//lookup selected algorithms data and log obtained data
+		for(unsigned int i=0;i<offline_algorithms.size();i++){
+			if(sched_dec.getNameofChoosenAlgorithm()==offline_algorithms[i].getAlgorithmName()){
+
+				MeasuredTime measured_time = mps[i].getMeasuredTime();
+				//update statistics
+				execution_time_of_real_model_+=measured_time.getTimeinNanoseconds();
+
+				//simulated execution:
+
+				Tuple t = sched_dec.getFeatureValues();
+				std::string input_data_features("(");
+				for(unsigned int j=0;j<t.size();j++){
+				//cout << t[i] << endl;
+					input_data_features+= boost::lexical_cast<std::string>(t[j]);
+					if(j!=t.size()-1) input_data_features+=", ";
+				}
+				input_data_features+=")";
+				
+				
+				assert(t.size()>0);
+
+				if(name_of_fastest_algorithm==sched_dec.getNameofChoosenAlgorithm()){
+					++number_of_right_decisions_; 
+				}
+				++number_of_total_decisions_;
+
+				//Feature: inter device parallelism
+				if(offline_algorithms[i].getComputeDevice()==CPU){
+					inter_device_parallel_time_cpu_+=measured_time.getTimeinNanoseconds();
+				}else if(offline_algorithms[i].getComputeDevice()==GPU){
+					inter_device_parallel_time_gpu_+=measured_time.getTimeinNanoseconds();
+				}
+				
+				if(!quiet)
+				std::cout << "Algorithm: '" << sched_dec.getNameofChoosenAlgorithm() 
+			 		  << "'   Input Data Feature Vector: " << input_data_features 
+			 	     << "   Measured Execution Time: " << measured_time.getTimeinNanoseconds() << "ns" 			 		  
+			 		  << "   Estimated Execution Time: " << sched_dec.getEstimatedExecutionTimeforAlgorithm().getTimeinNanoseconds() << "ns"
+			 	     << "	Relative Error: " << 	(measured_time.getTimeinNanoseconds()-sched_dec.getEstimatedExecutionTimeforAlgorithm().getTimeinNanoseconds())/sched_dec.getEstimatedExecutionTimeforAlgorithm().getTimeinNanoseconds() << "%" << std::endl; 
+			 	     
+			logfile << sched_dec.getNameofChoosenAlgorithm() << ";"
+			 		  << input_data_features << ";"
+	 	     		  << measured_time.getTimeinNanoseconds() << ";"	 		  
+			 		  << sched_dec.getEstimatedExecutionTimeforAlgorithm().getTimeinNanoseconds() << std::endl;
+			 	     	     
+			uint64_t timestamp_start_addObservation = getTimestamp();			
+			MeasurementPair mp(sched_dec.getFeatureValues(), measured_time, sched_dec.getEstimatedExecutionTimeforAlgorithm());
+			Scheduler::instance().addObservation(sched_dec.getNameofChoosenAlgorithm(),mp);
+			uint64_t timestamp_end_addObservation = getTimestamp();			
+			assert(timestamp_end_addObservation>timestamp_start_addObservation);
+			execution_history_.push_back(mp);
+			if(!quiet)
+				std::cout << "Time for addObservation(): " << timestamp_end_addObservation-timestamp_start_addObservation << "ns"<< std::endl;	
+			total_time_for_overhead_of_addObservation_+=timestamp_end_addObservation-timestamp_start_addObservation;	
+			}
+			
+		}	
+			
+
+	}
+
+	}; //end namespace core
+}; //end namespace stemod
+
+

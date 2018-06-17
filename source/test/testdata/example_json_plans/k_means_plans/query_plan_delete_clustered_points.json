@@ -1,0 +1,8 @@
+{  
+  "QUERY_PLAN":{  
+    "OPERATOR_NAME":"DELETE_TABLE",
+    "TABLE_NAME":"CLUSTERED_POINTS",
+    "LEFT_CHILD":null,
+    "RIGHT_CHILD":null
+  }
+}

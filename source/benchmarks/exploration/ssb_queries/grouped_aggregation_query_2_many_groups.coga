@@ -1,0 +1,3 @@
+set bench.exploration.querytype=grouped_aggregation
+set code_gen.opt.ocl_grouped_aggregation.hashtable_size_multiplier=0.05
+select lo_partkey, sum(lo_quantity) from lineorder group by lo_partkey;

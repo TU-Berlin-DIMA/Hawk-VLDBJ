@@ -1,0 +1,9 @@
+.settings
+.project
+.cproject
+.idea
+.*swp
+.DS_Store
+Debug
+build
+generated

@@ -1,0 +1,46 @@
+
+#create tables
+
+#create supplier table
+create table SUPPLIER (S_SUPPKEY  INT, S_NAME  VARCHAR, S_ADDRESS  VARCHAR, S_CITY  VARCHAR,  S_NATION  VARCHAR,  S_REGION  VARCHAR, S_PHONE VARCHAR);
+#create lineorder table
+create table LINEORDER (LO_ORDERKEY INT, LO_LINENUMBER INT, LO_CUSTKEY INT, LO_PARTKEY INT, LO_SUPPKEY INT, LO_ORDERDATE INT, LO_ORDERPRIORITY VARCHAR, LO_SHIPPRIORITY INT, LO_QUANTITY  INT, LO_EXTENDEDPRICE FLOAT, LO_ORDTOTALPRICE FLOAT, LO_DISCOUNT FLOAT, LO_REVENUE FLOAT, LO_SUPPLYCOST FLOAT, LO_TAX FLOAT, LO_COMMITDATE VARCHAR, LO_SHIPMODE VARCHAR);
+#create part table
+create table PART (P_PARTKEY INT, P_NAME VARCHAR, P_MFGR VARCHAR, P_CATEGORY VARCHAR, P_BRAND VARCHAR, P_COLOR VARCHAR, P_TYPE VARCHAR, P_SIZE INT, P_CONTAINER VARCHAR);
+#create customer table
+create table CUSTOMER (C_CUSTKEY  INT, C_NAME VARCHAR, C_ADDRESS VARCHAR, C_CITY VARCHAR, C_NATION VARCHAR, C_REGION VARCHAR, C_PHONE VARCHAR, C_MKTSEGMENT VARCHAR);
+#create date table
+create table DATES (D_DATEKEY INT, D_DATE VARCHAR, D_DAYOFWEEK VARCHAR, D_MONTH VARCHAR, D_YEAR INT, D_YEARMONTHNUM INT, D_YEARMONTH VARCHAR, D_DAYNUMINWEEK INT, D_DAYNUMINMONTH INT, D_DAYNUMINYEAR  INT, D_MONTHNUMINYEAR INT, D_WEEKNUMINYEAR INT, D_SELLINGSEASON VARCHAR, D_LASTDAYINWEEKFL INT, D_LASTDAYINMONTHFL INT, D_HOLIDAYFL INT, D_WEEKDAYFL INT);
+
+#create integrity constraints
+
+#primary key constraints
+add_primary_key_constraint SUPPLIER S_SUPPKEY
+add_primary_key_constraint PART P_PARTKEY
+add_primary_key_constraint CUSTOMER C_CUSTKEY
+add_primary_key_constraint DATES D_DATEKEY
+
+#foreign key constraints
+add_foreign_key_constraint LINEORDER LO_SUPPKEY SUPPLIER S_SUPPKEY
+add_foreign_key_constraint LINEORDER LO_PARTKEY PART P_PARTKEY
+add_foreign_key_constraint LINEORDER LO_CUSTKEY CUSTOMER C_CUSTKEY
+add_foreign_key_constraint LINEORDER LO_ORDERDATE DATES D_DATEKEY
+
+#import data into database
+#import_csv_file <TABLE_NAME> <CSV_FILE>
+import_csv_file SUPPLIER <PATH_TO_CSV_FILES>/supplier.tbl
+import_csv_file PART <PATH_TO_CSV_FILES>/part.tbl
+import_csv_file CUSTOMER <PATH_TO_CSV_FILES>/customer.tbl
+import_csv_file DATES <PATH_TO_CSV_FILES>/date.tbl
+import_csv_file LINEORDER <PATH_TO_CSV_FILES>/lineorder.tbl
+
+#example:
+#import_csv_file <TABLE_NAME> <CSV_FILE>
+import_csv_file SUPPLIER /home/sebastian/benchmarks/star_schema_benchmark/SF1/supplier.tbl
+import_csv_file PART /home/sebastian/benchmarks/star_schema_benchmark/SF1/part.tbl
+import_csv_file CUSTOMER /home/sebastian/benchmarks/star_schema_benchmark/SF1/customer.tbl
+import_csv_file DATES /home/sebastian/benchmarks/star_schema_benchmark/SF1/date.tbl
+import_csv_file LINEORDER /home/sebastian/benchmarks/star_schema_benchmark/SF1/lineorder.tbl
+
+#now we can execute queries!
+

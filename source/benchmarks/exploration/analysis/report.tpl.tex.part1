@@ -1,0 +1,22 @@
+\documentclass[a4paper]{article}
+\usepackage[a4paper,left=0cm,right=0cm,top=0cm,bottom=0cm]{geometry}
+\usepackage{pgfplots, pgfplotstable}
+\pgfplotsset{compat=newest}
+\usepgfplotslibrary{groupplots}
+\usetikzlibrary{patterns}
+\usetikzlibrary{arrows, decorations.markings}
+\usetikzlibrary{positioning}
+\usepackage{filecontents}
+\usepackage{ifthen}
+\usepackage{booktabs}
+\pgfplotscreateplotcyclelist{barplot cycle list}{
+	{black,fill=black},
+    {black,fill=gray!30!white}, %,postaction={pattern=sixpointed stars,pattern color=black}},%
+    {black,fill=white},
+	{black,fill=white,postaction={pattern=north east lines,pattern color=black}},
+    {black,fill=white,postaction={pattern=north west lines,pattern color=black}},
+    {black,fill=white,postaction={pattern=crosshatch,pattern color=black}},
+    {black,fill=white,postaction={pattern=crosshatch dots,pattern color=black}},
+}
+
+\begin{filecontents*}{data.csv}

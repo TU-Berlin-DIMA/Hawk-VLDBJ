@@ -1,0 +1,5 @@
+set code_gen.cl_device_type=phi
+set code_gen.num_threads=1
+set code_gen.gpu.global_size=100
+set enable_parallel_pipelines=false
+set code_gen.enable_caching=true

@@ -1,0 +1,74 @@
+}
+\maketitle
+
+\centering
+\begin{tikzpicture}[font=\scriptsize]
+  \begin{axis}[
+    height=5cm,
+%  width=\textwidth-1.15cm,
+%grid=major,
+    ybar=5pt,
+    ymin=0,
+    xticklabel=\empty,
+    xtick={\empty},
+    xtick=data,
+    ylabel={Time in ms},
+    max space between ticks=10em,
+    area legend,
+    legend style={font=\scriptsize, at={(0.5,-0.1)},anchor=north},
+    bar width=15pt,
+    scaled y ticks={real:0.001},
+    ytick scale label code/.code={},
+    % http://tex.stackexchange.com/a/22519/16685
+    nodes near coords={\pgfmathprintnumber[precision=3,zerofill,fixed]{\pgfplotspointmeta}},
+    every node near coord/.append style={rotate=90, anchor=west, /pgf/number format/precision=3, xshift=0.00cm},
+    enlarge y limits={upper,value=0.3},
+    number format=3,
+    %
+    cycle list name=barplot cycle list
+]
+    \pgfplotsinvokeforeach{0,...,\numberofrows}{
+        \addplot+[
+            error bars/.cd,
+            y dir=both,
+            y explicit
+        ]
+        table[
+                x expr=1,
+                y=Mean,
+                y error=Stdev,
+                select coords between index={#1}{#1}
+        ]
+        from \datatable;
+        \addlegendentry{\pgfplotstablegetelem{#1}{[index]2}\of\datatable\pgfplotsretval\ (\pgfplotstablegetelem{#1}{[index]3}\of\datatable\pgfplotsretval) on \pgfplotstablegetelem{#1}{[index]0}\of\datatable\pgfplotsretval}
+    }
+  \end{axis}
+
+\end{tikzpicture}
+
+\vbox{}
+
+\centering\tiny
+\pgfplotstabletypeset[
+    col sep = semicolon,
+    string replace*={_}{\textsubscript},
+    sort,
+    sort key={Median},
+    sort cmp=float <,
+    every head row/.style={%
+        before row=\toprule,
+        after row=\midrule
+    },
+    every last row/.style={after row=\bottomrule},
+    /pgf/number format/fixed,
+    /pgf/number format/fixed zerofill,
+    /pgf/number format/precision=4,
+    display columns/0/.style={string type},
+    display columns/1/.style={string type},
+    display columns/2/.style={string type},
+    display columns/3/.style={string type},
+    columns={DeviceType, Device, VariantTag, Variant, Min, Max, Median, Mean, Stdev, Var}
+    ]\datatable
+
+\end{document}
+

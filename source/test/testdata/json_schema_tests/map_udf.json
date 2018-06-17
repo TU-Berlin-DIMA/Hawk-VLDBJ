@@ -1,0 +1,17 @@
+{
+    "QUERY_PLAN":{
+        "OPERATOR_NAME":"MAP_UDF",
+        "MAP_UDF_OUTPUT_ATTRIBUTES":[{
+            "ATTRIBUTE_TYPE":"double",
+            "ATTRIBUTE_NAME":"MULT"
+        }],
+        "MAP_UDF_CODE":[
+            "#<OUT>.MULT#=#LINEORDER.LO_QUANTITY#*#LINEORDER.LO_EXTENDEDPRICE#;"
+        ],
+        "LEFT_CHILD":{
+            "OPERATOR_NAME":"TABLE_SCAN",
+            "TABLE_NAME":"LINEORDER"
+        },
+        "RIGHT_CHILD":null
+    }
+}

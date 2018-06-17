@@ -1,0 +1,9 @@
+# hash table modus - we have to test which is faster
+# set default_hash_table=ocl_seeded_linear_probing
+set default_hash_table=ocl_linear_probing
+
+set bench.exploration.querytype=aggregation_with_join
+#set code_gen.opt.hack.ignore_bitpacking_max_bits=true
+execute_query_from_json tpch_queries_feature_wise_per_query/tpch_query19.json
+
+set code_gen.opt.hack.ignore_bitpacking_max_bits=false

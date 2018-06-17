@@ -1,0 +1,1 @@
+set code_gen.memory_access=coalesced

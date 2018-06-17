@@ -1,0 +1,111 @@
+#######################
+# CoGaDB SAM-Exporter #	
+#######################
+Version: 01/08/2015
+Author: John Sarrazin (john.sarrazin@tu-dortmund.de)
+
+The SAM-Exporter lets you export parts of the sample genome in SAM-Format and view the result in the Integrative Genomics Viewer (IGV) from Broad Institude.
+
+For more details on SAM-Format see:
+https://samtools.github.io/hts-specs/SAMv1.pdf 
+
+For more details on IGV see;
+https://www.broadinstitute.org/igv/ 
+
+##################################
+# Preparations and Configurations#
+##################################
+
+The SAM-Exporter is part of the genomic extension of CoGaDB and relies on a correctly set up genome database.
+
+
+# CoGaDB #
+##########
+
+The SAM-Exporter lets you configure the following variables in the CoGaDB startup script. If not configured, the default values are taken.
+
+sam_save_path -> Defines where exported SAM-Files will be saved. (default: /tmp)
+igv_snapshot_path -> Defines where IGV-Snapshots will be saved. (default: /tmp)
+igv_snapshot_name -> Defines name and format of IGV-Snapshots. (default: snapshot.jpg)
+igv_port -> Defines the port that is used for CoGaDB to communicate with IGV. (default: 60151)
+
+
+An example startup script could be:
+
+setdevice cpu
+set print_query_plan=false
+set path_to_database=/home/john/coga_databases
+set table_loader_mode=main_memory
+#Genomic Attributes
+set sam_save_path=/home/john/coga_samfiles_csvfiles
+set igv_snapshot_path=/home/john/igv_screenshots
+set igv_snapshot_name=snapshot.jpg
+set igv_port=60151
+create_genome_database_schema
+import_reference_genome /home/john/genoms/WGS_assembly_barley_cultivar_Morex_contig1-30.fasta WGS_assembly_barley_cultivar_Morex
+import_sample_genome /home/john/genoms/Harrington_contig1-30.sam WGS_assembly_barley_cultivar_Morex
+
+
+# IGV #
+#######
+
+To use the IGV-Control feature of the exporter (Parameter -i), you first need to download IGV from:
+https://www.broadinstitute.org/software/igv/download
+The tested version of IGV is 2.3.57
+
+On Linux, start IGV by running the igv.sh in the downloaded folder.
+When first used, you need to enable port in "View -> Preferences -> Advanced". The specified port has to match the igv_port variable in the startup script.
+You need to import all reference Genomes into IGV before using IGV-Control with the corresponding sample genome. Once imported, they are available for future use.
+"Genomes -> Create .genome File"
+	Unique Identifier needs to be set the same as rg_name in CoGaDB.
+	Descriptive Name is the name, you'll see in IGV and can be freely chosen.
+	Fasta File is the path to the .fasta file of the reference genome to be imported.
+
+For example, if you use the given startup script above, the settings have to be:
+Unique Identifier:	WGS_assembly_barley_cultivar_Morex
+Descriptive Name:	foo_Harrington1-30
+Fasta File:  		/home/john/genoms/WGS_assembly_barley_cultivar_Morex_contig1-30.fasta
+
+Click Ok and save the .genome file somewhere of your harddrive. IGV will load this .genome file in future automatically at startup. 
+
+When loading a SAM-File, IGV will prompt you to index this file. This will create a .sai file as index and is necessary for IGV to display SAM-Files. "Note: The .SAI index is an IGV format, and it does not work with samtools or any other application" (https://www.broadinstitute.org/software/igv/BAM).
+
+####################
+# Sam Exporter Api #
+####################
+
+To export a sample genome in SAM-Format use the following command:
+export_sample_genome <contigID_1>,<contigID_2>,...,<contigID_n> <start> <end> (-<param_1> ... -<param_n>) (<Filename>)
+You can use the special sign *, if you want to export all contigs or positions.
+
+The supported parameter are:
+-t -> activates time measurement
+-i -> loads the exported Sam-File into IGV and shows the first contig with data at given position. If end is defined with *, it will show the entire contig instead. Requires the IGV to be set up properly and to run in background. See IGV section above for more details.
+-s -> does only have an effect, if combined with -i. Tells IGV to make a snapshot of the genome and save it in the path defined by the variable igv_snapshot_path and igv_snapshot_name.
+
+Some examples for correct commands are:
+
+export_sample_genome * * * Foobar
+export_sample_genome 6 1410 1430 -t
+export_sample_genome 3,4,5 * 800 -t -i foo
+export_sample_genome * 50 * -i -s bar
+
+########################
+# SAM-File Verificator #
+########################
+
+The Sam Exporter has a verification modul which checks an exported SAM-File against an original. To call this modul the following command is used:
+sam_verificator <originalSam> <exportedSam> 
+
+Example:
+sam_verificator /home/john/coga_samfiles_csvfiles/Harrington_contig1-30.sam /home/john/coga_samfiles_csvfiles/foobar.sam
+
+The verificator lists lines from the original Sam-File, that are not in the exported SAM-File and vice versa. At the end it states, whether the files are functionally equal or not.
+
+This only works if the entire SAM-File is exported (e.g. export_sample_genome * * * foobar).
+
+###########
+# Contact #
+###########
+
+If you have any issues using the Sam Exporter, do not hesitate to contact us.

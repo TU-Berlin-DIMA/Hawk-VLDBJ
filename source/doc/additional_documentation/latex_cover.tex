@@ -1,0 +1,111 @@
+\documentclass[a4paper]{book}
+\usepackage{makeidx}
+\usepackage{natbib}
+%\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{ifthen}
+\usepackage[table]{xcolor}
+\usepackage{textcomp}
+\usepackage{alltt}
+\usepackage[utf8]{inputenc}
+\usepackage{mathptmx}
+\usepackage[scaled=.90]{helvet}
+\usepackage{courier}
+\usepackage{sectsty}
+\usepackage[titles]{tocloft}
+\usepackage{fancyhdr}
+\renewcommand{\fancyfoot}[2][1]{}
+\usepackage{doxygen}
+\lstset{language=C++,inputencoding=utf8,basicstyle=\footnotesize,breaklines=true,breakatwhitespace=true,tabsize=3,numbers=left }
+\usepackage[pdftex]{graphicx}
+\makeindex
+\setcounter{tocdepth}{3}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\familydefault}{\sfdefault}
+\hfuzz=15pt
+\setlength{\emergencystretch}{15pt}
+\hbadness=750
+\tolerance=750
+
+
+\fancypagestyle{plain}
+
+\usepackage{selinput}     % Replacement for »inputenc«
+\SelectInputMappings{     % Semi-automatic input selection
+  adieresis={ä},          % by a list of selected glyphs
+  germandbls={ß},         % see: http://partners.adobe.com/public/developer/en/opentype/glyphlist.txt
+  Euro={€}
+}
+
+\usepackage[pdftex,
+            pdfauthor={Sebastian Breß, Robin Haberkorn, and Steven Ladewig},
+            pdftitle={CoGaDB Reference Manual}, %{CoGaDB: A Column-oriented GPU-accelerated DBMS -- Reference Manual},
+            %pdfsubject={CoGaDB: A Column-oriented GPU-accelerated DBMS -- Reference Manual},
+            pdfkeywords={GPU-accelerated DBMS, Column Store, Main-Memory DBMS},
+            unicode=true
+            ]{hyperref}
+
+\hypersetup{
+  pdfauthor={Sebastian Breß, Robin Haberkorn, and Steven Ladewig},
+  pdftitle={CoGaDB Reference Manual},
+  pdflang={en}
+}
+
+\begin{document}
+
+
+
+\begin{titlepage}
+ \begin{center}
+%  {\LARGE Otto-von-Guericke-University Magdeburg}\\
+%  \begin{figure}[h]
+%   \hbox{}\hfill
+%    \begin{minipage}[t]{10cm}
+%      \begin{center}
+%%        \includegraphics[width=5cm]{figures/otto}
+%        \includegraphics{hype_logo_300width.png}
+%      \end{center}
+%    \end{minipage} 
+%   \hfill\hbox{}
+%  \end{figure}
+%  {\large Fakult"at f"ur Informatik \\ Institut f"ur Technische
+%und Betriebliche Informationssysteme \\ Arbeitsgruppe Datenbanken \\[2cm]}
+  {\huge CoGaDB: A Column-oriented GPU-accelerated DBMS\\[1cm]}
+  %{\Large\bf  Ein selbstlernendes Kostenmodell für die Verteilung von Datenbankoperationen auf einer hybriden CPU/GPU Architektur\\[1.0cm]} %Self-Tuning compute Device
+  {\Large\bf Reference Manual\\[1.0cm]} 
+% Scheduler for Database Operations
+  {\large Version 0.3}\\[0.2cm]
+  \begin{figure}[h]
+   \hbox{}\hfill
+    \begin{minipage}[t]{10cm}
+      \begin{center}
+%        \includegraphics[width=5cm]{figures/otto}
+        \includegraphics{cogadb_logo_new.pdf}
+      \end{center}
+    \end{minipage} 
+   \hfill\hbox{}
+  \end{figure}
+  {\LARGE Otto-von-Guericke-University Magdeburg}\\
+  {\large School of Computer Science \\ Department of Technical and Business Information Systems \\ Database and Information Systems Group \\[2cm]}
+\vfill
+  {\small Authors:}\\[0.2cm] {\large Sebastian Breß}\\[0.2cm]{\large Robin Haberkorn}\\[0.2cm] {\large Steven Ladewig}\\[0.2cm]
+\vfill
+ \end{center}
+\end{titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Titelr"uckseite: Bibliographische Angaben
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\thispagestyle{empty}
+\vspace*{\fill}
+%\begin{minipage}{8.2cm}
+%\textbf{Breß, Sebastian:}\\
+%\emph{Ein selbstlernendes Entscheidungsmodell für die Verteilung von Datenbankoperationen auf CPU/GPU-Systemen}\\Masterarbeit, 
+%Otto"=von"=Guericke"=Universit"at Magdeburg, 2012.
+%\end{minipage}
+\newpage
+\tableofcontents

@@ -1,0 +1,24 @@
+{  
+  "QUERY_PLAN":{  
+    "OPERATOR_NAME":"STORE_TABLE",
+    "TABLE_NAME":"POINTS",
+    "PERSIST_TABLE_ON_DISK":false,
+    "LEFT_CHILD":{  
+      "OPERATOR_NAME":"CREATE_TABLE",
+      "TABLE_NAME":"POINTS",
+      "TABLE_SCHEMA":[  
+        {  
+          "ATTRIBUTE_TYPE":"DOUBLE",
+          "ATTRIBUTE_NAME":"P_VALUE_0"
+        },
+        {  
+          "ATTRIBUTE_TYPE":"DOUBLE",
+          "ATTRIBUTE_NAME":"P_VALUE_1"
+        }
+      ],
+      "PATH_TO_DATA_FILE":"#PLACE_HOLDER_PATH_TO_DATA_FILE#",
+      "FIELD_SEPARATOR":"|"
+    },
+    "RIGHT_CHILD":null
+  }
+}

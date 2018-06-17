@@ -1,0 +1,22 @@
+#aggregation: sequential-false-cuckoo_hashing-sequential
+#projection: sequential-false-serial_single_pass (Note: best variant without predication (performs bad for complex pipelines))
+#general config
+#set enable_parallel_pipelines=false
+#set code_gen.enable_caching=true
+#set code_gen.num_threads=1
+#generic variations
+set code_gen.exec_strategy=opencl
+set default_hash_table=ocl_linear_probing
+set code_gen.memory_access=sequential
+set code_gen.opt.enable_predication=false
+#projection pipeline config
+set code_gen.pipe_exec_strategy=serial_single_pass
+#aggregation pipeline config
+set code_gen.opt.ocl_grouped_aggregation.hack.enable_manual_ht_size=true
+set code_gen.opt.ocl_grouped_aggregation.hack.ht_size=2000
+set code_gen.opt.ocl_grouped_aggregation_strategy=sequential
+set code_gen.opt.ocl_grouped_aggregation.atomic.workgroup.local_size=4
+set code_gen.opt.ocl_grouped_aggregation.gpu.global_size_multiplier=1
+#set code_gen.opt.ocl_grouped_aggregation_hashtable=cuckoo_hashing
+set code_gen.opt.ocl_grouped_aggregation_hashtable=linear_probing
+set code_gen.opt.ocl_grouped_aggregation.cpu.num_threads_per_kernel=4

@@ -1,0 +1,1 @@
+set code_gen.pipe_exec_strategy=serial_single_pass

@@ -1,0 +1,12 @@
+{  
+  "QUERY_PLAN":{  
+    "OPERATOR_NAME":"STORE_TABLE",
+    "TABLE_NAME":"CENTROIDS",
+    "PERSIST_TABLE_ON_DISK":false,
+      "LEFT_CHILD":{  
+        "OPERATOR_NAME":"TABLE_SCAN",
+        "TABLE_NAME":"NEW_CENTROIDS"
+    },
+    "RIGHT_CHILD":null
+  }
+}

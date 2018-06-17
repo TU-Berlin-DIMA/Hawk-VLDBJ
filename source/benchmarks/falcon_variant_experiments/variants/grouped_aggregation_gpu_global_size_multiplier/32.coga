@@ -1,0 +1,1 @@
+set code_gen.opt.ocl_grouped_aggregation.gpu.global_size_multiplier=32

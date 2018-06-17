@@ -1,0 +1,6 @@
+
+
+execute_cogascript profiles/profile_star_schema_queries_c_cpu.coga
+execute_cogascript profiles/profile_star_schema_queries_opencl_cpu.coga
+
+

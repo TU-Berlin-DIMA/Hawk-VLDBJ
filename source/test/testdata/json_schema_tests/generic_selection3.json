@@ -1,0 +1,38 @@
+{
+  "QUERY_PLAN":{
+    "OPERATOR_NAME":"MAP_UDF",
+    "MAP_UDF_OUTPUT_ATTRIBUTES":[
+      {
+        "ATTRIBUTE_TYPE":"double",
+        "ATTRIBUTE_NAME":"MULT"
+      }
+    ],
+    "MAP_UDF_CODE":[
+      "#<OUT>.MULT#=#LINEORDER.LO_DISCOUNT#*#LINEORDER.LO_EXTENDEDPRICE#;"
+    ],
+    "LEFT_CHILD":{
+      "OPERATOR_NAME":"GENERIC_SELECTION",
+      "PREDICATE":{
+        "PREDICATE_TYPE":"COLUMN_CONSTANT_PREDICATE",
+        "ATTRIBUTE_REFERENCE":{
+          "COLUMN_NAME":"LO_QUANTITY",
+          "TABLE_NAME":"LINEORDER",
+          "VERSION":1,
+          "RESULT_NAME":"QUANTITY"
+        },
+        "PREDICATE_COMPARATOR":"LESS_THAN",
+        "CONSTANT":{
+          "CONSTANT_VALUE":"10",
+          "CONSTANT_TYPE":"INT"
+        }
+      },
+      "LEFT_CHILD":{
+        "OPERATOR_NAME":"TABLE_SCAN",
+        "TABLE_NAME":"LINEORDER"
+      },
+      "RIGHT_CHILD":null
+    },
+    "RIGHT_CHILD":null
+  }
+}
+

@@ -1,0 +1,5 @@
+set optimizer=no_join_order_optimizer
+set query_execution_policy=compiled
+#set default_code_generator=c
+set default_code_generator=multi_staged
+set code_gen.c_compiler_clang_jit=true

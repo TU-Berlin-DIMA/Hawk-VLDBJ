@@ -1,0 +1,1183 @@
+/*
+ * Copyright (c) 2013, Robin Haberkorn, Otto-von-Guericke University of Magdeburg, Germany. All rights reserved.
+ * Derived from Chapter 5 "Parsing SQL" examples, lex & yacc by John R. Levine, Tony Mason and Doug Brown.
+ *		Copyright 1990, 1992 O'Reilly & Associates, Inc.
+ *
+ * This program and accompanying materials are made available under the terms of the 
+ * GNU GENERAL PUBLIC LICENSE - Version 3, http://www.gnu.org/licenses/gpl-3.0.txt
+ */
+
+%skeleton "lalr1.cc" /* C++ Mode */
+%require "2.5"
+
+%defines
+%define namespace "CoGaDB::SQL"
+%define parser_class_name "Parser"
+
+/* will use CoGaDB::SQL::Scanner::lex() */
+%name-prefix "CoGaDB::SQL::Scanner::"
+
+/*
+ * forward declare CoGaDB::SQL::Driver,
+ * sql_driver.hpp cannot be included from sql_parser.hpp
+ */
+%code requires {
+namespace CoGaDB {
+	namespace SQL {
+		namespace Scanner {
+			typedef void *type;
+		}
+		class Driver;
+	}
+} /* namespace CoGaDB */
+} /* requires */
+
+/*
+ * ...but it can be and must be included from sql_parser.cpp
+ */
+%code {
+#include "sql/server/sql_driver.hpp"
+/* work around a bug in flex that generates code that causes a warning */
+#pragma GCC diagnostic ignored "-Wsign-compare"
+}
+
+/*
+ * Define YYDEBUG macro depending on NDEBUG
+ */
+%code requires {
+#ifndef NDEBUG
+#define YYDEBUG 1
+#endif
+}
+
+/*
+ * these parameters will be automatically saved in the
+ * parser object
+ */
+%parse-param { CoGaDB::SQL::Driver &driver }
+
+/*
+ * yylex() is reentrant and so must be called with the
+ * scanner context.
+ * We pass it through as a parser constructor argument.
+ * Alternatively, we could
+ * #define scanner driver.scanner
+ * but then SQL::Driver::scanner would have to be public
+ */
+%parse-param { CoGaDB::SQL::Scanner::type &scanner }
+%lex-param   { CoGaDB::SQL::Scanner::type scanner }
+
+/*
+ * symbolic tokens
+ */
+%code requires {
+/*!
+ * \file sql_parser.hpp
+ *
+ * The grammar used by the SQL parser is documented on the
+ * \ref page_sql_grammar page.
+ *
+ * \page page_sql_grammar SQL Grammar
+ * \htmlinclude sql_grammar.xhtml
+ */
+
+#include <utility>
+
+#include "sql/server/sql_parsetree.hpp"
+} /* requires */
+
+/*
+ * Special tokens and
+ * tokens with associated union types
+ */
+%token END 0 "end of file"
+
+%union {
+	ParseTree::String	*string;
+	ParseTree::Integer	*integer;
+
+	ParseTree::AggregationFunction aggregation_function;
+}
+%token <string>		NAME
+%token <string>		STRING
+%token <integer>		INTNUM APPROXNUM
+%token <aggregation_function>	AMMSC
+
+/*
+ * Operators
+ */
+%union {
+	ParseTree::ValueComparator comparator;
+}
+
+%left OR
+%left AND
+%left NOT
+%left <comparator> COMPARISON /* = <> < > <= >= */
+%left '+' '-'
+%left '*' '/'
+%nonassoc UMINUS
+
+/*
+ * literal keyword tokens
+ */
+%token ALL ANY AS ASC AUTHORIZATION BETWEEN BIGINT BY
+%token CHARACTER CHECK CLOSE COMMIT CONTINUE CREATE CROSS CURRENT
+%token CURSOR DATE DECIMAL DECLARE DEFAULT DELETE DESC DISTINCT DOUBLE
+%token ESCAPE EXISTS FETCH FLOAT FOR FOREIGN FOUND FROM GOTO
+%token GRANT GROUP HAVING IN INDICATOR INNER INSERT INTEGER INTO
+%token IS JOIN KEY LANGUAGE LIKE LIMIT MODULE NULLX NUMERIC OF ON
+%token OPEN OPTION ORDER PRECISION PRIMARY PRIVILEGES PROCEDURE
+%token PUBLIC REAL REFERENCES ROLLBACK SCHEMA SELECT SET
+%token SMALLINT SOME SQLCODE SQLERROR TABLE TO UNION
+%token UNIQUE UNSIGNED UPDATE USER VALUES VARCHAR VIEW WHENEVER WHERE WITH WORK
+%token COBOL FORTRAN PASCAL PLI C ADA
+
+/*
+ * Grammar rules & types
+ */
+%union {
+	/*
+	ParseTree::Sequence	*sequence;
+	*/
+	ParseTree::Statement	*statement;
+}
+/*
+%type <sequence>	sql_list
+*/
+%type <statement>	sql manipulative_statement
+
+%union {
+	ParseTree::AttributeType	attribute_type;
+	ParseTree::TableName		*table_name;
+	ParseTree::Attribute	*attribute;
+	ParseTree::TableSchema	*schema;
+	ParseTree::Table		*table;
+	ParseTree::CreateTable	*create_table;
+}
+%type <attribute_type>	data_type
+%type <table_name>	table
+%type <attribute>	base_table_element column_def
+%type <schema>	base_table_element_commalist
+%type <table>	base_table_def
+%type <create_table>	create_statement
+
+%union {
+	ParseTree::ColumnList		*column_list;
+	ParseTree::AtomExpression	*atom_expression;
+	ParseTree::Tuple		*tuple;
+	ParseTree::InsertInto		*insert_into;
+}
+%type <column_list>	opt_column_commalist
+%type <atom_expression>	insert_atom atom literal
+%type <tuple>		values_or_query_spec insert_atom_commalist
+%type <insert_into>	insert_statement
+
+%union {
+	ParseTree::Predicate			*predicate;
+	ParseTree::SearchCondition		*search_condition;
+	ParseTree::InnerJoin			*inner_join;
+	ParseTree::CrossJoin			*cross_join;
+	ParseTree::Join				*join;
+	ParseTree::TableReference		*table_reference;
+	ParseTree::TableReferenceList		*table_reference_list;
+	ParseTree::TableExpression		*table_expression;
+	ParseTree::SortOrder			sort_order;
+	SortAttribute		*ordering_spec;
+	ParseTree::OrderBy			*order_by;
+	ParseTree::Limit			*limit;
+	ParseTree::FunctionExpression		*function_expression;
+	ParseTree::ScalarExpression		*scalar_expression;
+	ParseTree::ScalarExpressionList	*scalar_expression_list;
+	ParseTree::SelectFrom			*select_from;
+}
+%type <predicate>		predicate comparison_predicate between_predicate like_predicate
+%type <search_condition>	search_condition join_condition join_spec where_clause opt_where_clause opt_having_clause having_clause
+%type <inner_join>		qualified_join
+%type <cross_join>		cross_join
+%type <join>			joined_table
+%type <table_reference>	table_ref
+%type <table_reference_list>	from_clause table_ref_commalist
+%type <string>			column_ref column
+%type <column_list>		opt_group_by_clause column_ref_commalist
+%type <sort_order>		opt_asc_desc
+%type <ordering_spec>		ordering_spec
+%type <order_by>		opt_order_by_clause ordering_spec_commalist
+%type <limit>                   opt_limit_exp
+%type <table_expression>	table_exp
+%type <function_expression>	function_ref
+%type <scalar_expression>	scalar_exp derived_column
+%type <scalar_expression_list>	scalar_exp_commalist selection
+%type <select_from>		query_statement query_exp query_term query_spec
+
+/*
+ * Namespace imports and declarations for sql_parser.cpp
+ */
+%code {
+#include <boost/make_shared.hpp>
+
+using namespace CoGaDB;
+using namespace query_processing;
+}
+
+%%
+
+sql_list:
+		sql ';'
+	{
+		/* first statement parsed */
+		driver.result = boost::make_shared<ParseTree::Sequence>();
+		/* transfer $sql ownership */
+		driver.result->push_back($sql);
+	}
+	|	sql_list sql ';'
+	{
+		driver.result->push_back($sql);
+	}
+	;
+
+
+	/* schema definition language */
+	/* Note: other ``sql:'' rules appear later in the grammar */
+sql:		schema
+	;
+	
+schema:
+		CREATE SCHEMA AUTHORIZATION user opt_schema_element_list
+	;
+
+opt_schema_element_list:
+		/* empty */
+	|	schema_element_list
+	;
+
+schema_element_list:
+		schema_element
+	|	schema_element_list schema_element
+	;
+
+schema_element:
+		base_table_def
+	|	view_def
+	|	privilege_def
+	;
+
+base_table_def:
+		CREATE TABLE table '(' base_table_element_commalist[schema] ')'
+	{
+		$$ = new ParseTree::Table($table->table, *$schema);
+		delete $table;
+		delete $schema;
+	}
+	;
+
+base_table_element_commalist:
+		base_table_element
+	{
+		$$ = new ParseTree::TableSchema(1, *$1);
+		delete $1;
+	}
+	|	base_table_element_commalist[list] ',' base_table_element[attribute]
+	{
+		$$ = $list;
+		$$->push_back(*$attribute);
+		delete $attribute;
+	}
+	;
+
+base_table_element:
+		column_def
+	|	table_constraint_def { driver.unsupported(); }
+	;
+
+column_def:
+		column data_type column_def_opt_list
+	{
+		$$ = new ParseTree::Attribute($data_type, *$column);
+		delete $column;
+	}
+	;
+
+column_def_opt_list:
+		/* empty */
+	|	column_def_opt_list column_def_opt { driver.unsupported(); }
+	;
+
+column_def_opt:
+		NOT NULLX
+	|	NOT NULLX UNIQUE
+	|	NOT NULLX PRIMARY KEY
+	|	DEFAULT literal
+	|	DEFAULT NULLX
+	|	DEFAULT USER
+	|	CHECK '(' search_condition ')'
+	|	REFERENCES table
+	|	REFERENCES table '(' column_commalist ')'
+	;
+
+table_constraint_def:
+		UNIQUE '(' column_commalist ')'
+	|	PRIMARY KEY '(' column_commalist ')'
+	|	FOREIGN KEY '(' column_commalist ')'
+			REFERENCES table 
+	|	FOREIGN KEY '(' column_commalist ')'
+			REFERENCES table '(' column_commalist ')'
+	|	CHECK '(' search_condition ')'
+	;
+
+column_commalist:
+		column
+	|	column_commalist ',' column
+	;
+
+view_def:
+		CREATE VIEW table opt_column_commalist
+		AS query_spec opt_with_check_option
+	;
+	
+opt_with_check_option:
+		/* empty */
+	|	WITH CHECK OPTION
+	;
+
+opt_column_commalist:
+		/* empty */			{ $$ = NULL; }
+	|	'(' column_commalist ')'	{ driver.unsupported(); }
+	;
+
+privilege_def:
+		GRANT privileges ON table TO grantee_commalist
+		opt_with_grant_option
+	;
+
+opt_with_grant_option:
+		/* empty */
+	|	WITH GRANT OPTION
+	;
+
+privileges:
+		ALL PRIVILEGES
+	|	ALL
+	|	operation_commalist
+	;
+
+operation_commalist:
+		operation
+	|	operation_commalist ',' operation
+	;
+
+operation:
+		SELECT
+	|	INSERT
+	|	DELETE
+	|	UPDATE opt_column_commalist
+	|	REFERENCES opt_column_commalist
+	;
+
+
+grantee_commalist:
+		grantee
+	|	grantee_commalist ',' grantee
+	;
+
+grantee:
+		PUBLIC
+	|	user
+	;
+
+	/* module language */
+sql:		module_def
+	;
+
+module_def:
+		MODULE opt_module
+		LANGUAGE lang
+		AUTHORIZATION user
+		opt_cursor_def_list
+		procedure_def_list
+	;
+
+opt_module:
+		/* empty */
+	|	module
+	;
+
+lang:
+		COBOL
+	|	FORTRAN
+	|	PASCAL
+	|	PLI
+	|	C
+	|	ADA
+	;
+
+opt_cursor_def_list:
+		/* empty */
+	|	cursor_def_list
+	;
+
+cursor_def_list:
+		cursor_def
+	|	cursor_def_list cursor_def
+	;
+
+cursor_def:
+		DECLARE cursor CURSOR FOR query_exp opt_order_by_clause
+	;
+
+opt_order_by_clause:
+		/* empty */
+	{
+		$$ = NULL;
+	}
+	|	ORDER BY ordering_spec_commalist
+	{
+		$$ = $ordering_spec_commalist;
+	}
+	;
+
+ordering_spec_commalist:
+		ordering_spec
+	{
+		$$ = new ParseTree::OrderBy();
+		$$->order.push_back(*$ordering_spec); 
+		delete $ordering_spec;
+	}
+	|	ordering_spec_commalist[list] ',' ordering_spec
+	{
+		$$ = $list;
+                $$->order.push_back(*$ordering_spec);
+		delete $ordering_spec;
+	}
+	;
+
+ordering_spec:
+		INTNUM opt_asc_desc
+	{
+		driver.unsupported();
+	}
+	|	column_ref opt_asc_desc
+	{
+		$$ = new SortAttribute(*$column_ref, $opt_asc_desc);
+		delete $column_ref;
+	}
+	;
+
+opt_asc_desc:
+		/* empty */	{ $$ = CoGaDB::ASCENDING; }
+	|	ASC		{ $$ = CoGaDB::ASCENDING; }
+	|	DESC		{ $$ = CoGaDB::DESCENDING; }
+	;
+
+opt_limit_exp:
+		/* empty */
+	{
+		$$ = NULL;
+	}
+	|	LIMIT INTNUM[num]
+	{
+            assert($num->empty()==false);
+            size_t num_rows = 0;
+            try{
+                num_rows = boost::any_cast<int>(*$num);
+            }catch(boost::bad_any_cast& e){
+                COGADB_FATAL_ERROR("Invalid Parameter for LIMIT, which has to be an unsigned integer!","");
+            }
+            $$ = new ParseTree::Limit(num_rows);
+            delete $num;
+	}
+        ;
+
+procedure_def_list:
+		procedure_def
+	|	procedure_def_list procedure_def
+	;
+
+procedure_def:
+		PROCEDURE procedure parameter_def_list ';'
+		manipulative_statement_list
+	;
+
+manipulative_statement_list:
+		manipulative_statement
+	|	manipulative_statement_list manipulative_statement
+	;
+
+parameter_def_list:
+		parameter_def
+	|	parameter_def_list parameter_def
+	;
+
+parameter_def:
+		parameter data_type
+	|	SQLCODE
+	;
+
+	/* manipulative statements */
+
+
+sql:		manipulative_statement
+	;
+
+manipulative_statement:
+		close_statement		{ driver.unsupported(); }
+	|	commit_statement		{ driver.unsupported(); }
+	|	delete_statement_positioned	{ driver.unsupported(); }
+	|	delete_statement_searched	{ driver.unsupported(); }
+	|	fetch_statement		{ driver.unsupported(); }
+	|	insert_statement		{ $$ = $1; }
+	|	open_statement		{ driver.unsupported(); }
+	|	rollback_statement		{ driver.unsupported(); }
+	|	select_statement		{ driver.unsupported(); }
+	|	query_statement		{ $$ = $1; }
+	|	update_statement_positioned	{ driver.unsupported(); }
+	|	update_statement_searched	{ driver.unsupported(); }
+	|	create_statement		{ $$ = $1; }
+	;
+
+close_statement:
+		CLOSE cursor
+	;
+
+commit_statement:
+		COMMIT WORK
+	;
+
+delete_statement_positioned:
+		DELETE FROM table WHERE CURRENT OF cursor
+	;
+
+delete_statement_searched:
+		DELETE FROM table opt_where_clause
+	;
+
+fetch_statement:
+		FETCH cursor INTO target_commalist
+	;
+
+insert_statement:
+		INSERT INTO table[table_name] opt_column_commalist[columns] values_or_query_spec[values]
+	{
+		$$ = new ParseTree::InsertInto(*$table_name, *$values);
+		delete $table_name;
+		delete $values;
+	}
+	;
+
+values_or_query_spec:
+		VALUES '(' insert_atom_commalist[values] ')'
+		{ $$ = $values; }
+	|	query_spec
+		{ driver.unsupported(); }
+	;
+
+insert_atom_commalist:
+		insert_atom
+	{
+		$$ = new ParseTree::Tuple(1, $insert_atom->atom);
+		delete $insert_atom;
+	}
+	|	insert_atom_commalist[list] ',' insert_atom
+	{
+		$$ = $list;
+		$$->push_back($insert_atom->atom);
+		delete $insert_atom;
+	}
+	;
+
+insert_atom:
+		atom
+	|	NULLX /* "NULL" token */
+		{ driver.unsupported(); }
+	;
+
+open_statement:
+		OPEN cursor
+	;
+
+rollback_statement:
+		ROLLBACK WORK
+	;
+
+select_statement:
+		SELECT opt_all_distinct selection
+		INTO target_commalist
+		table_exp
+	;
+
+query_statement:
+		query_exp
+	;
+
+create_statement:
+		base_table_def
+	{
+		$$ = new ParseTree::CreateTable($1);
+	}
+	;
+
+opt_all_distinct:
+		/* empty */
+	|	ALL
+	|	DISTINCT
+	;
+
+update_statement_positioned:
+		UPDATE table SET assignment_commalist
+		WHERE CURRENT OF cursor
+	;
+
+assignment_commalist:
+	|	assignment
+	|	assignment_commalist ',' assignment
+	;
+
+assignment:
+		column '=' scalar_exp
+	|	column '=' NULLX
+	;
+
+update_statement_searched:
+		UPDATE table SET assignment_commalist opt_where_clause
+	;
+
+target_commalist:
+		target
+	|	target_commalist ',' target
+	;
+
+target:
+		parameter_ref
+	;
+
+opt_where_clause:
+		/* empty */	{ $$ = NULL; }
+	|	where_clause
+	;
+
+	/* query expressions */
+
+query_exp:
+		query_term
+	|	query_exp UNION query_term	{ driver.unsupported(); }
+	|	query_exp UNION ALL query_term	{ driver.unsupported(); }
+	;
+
+query_term:
+		query_spec
+	|	'(' query_exp ')' { $$ = $2; }
+	;
+
+query_spec:
+		SELECT opt_all_distinct selection table_exp
+	{
+		ParseTree::ScalarExpressionListPtr selection($selection);
+		$$ = new ParseTree::SelectFrom(selection, *$table_exp);
+		delete $table_exp;
+	}
+	;
+
+selection:
+		scalar_exp_commalist
+	|	'*' { $$ = NULL; }
+	;
+
+/*
+ * FIXME: the position of the ORDER BY clause is not quite
+ * correct, since if a query_exp is used in an algebraic expression
+ * (embedded SELECT), the ORDER BY clause is not allowed.
+ * Refer to SQL-92 grammar.
+ */
+table_exp:
+		from_clause[from]
+		opt_where_clause[where]
+		opt_group_by_clause[group_by]
+		opt_having_clause[having]
+		opt_order_by_clause[order_by]
+                opt_limit_exp[limit]
+	{
+		ParseTree::SearchConditionPtr where($where);
+		ParseTree::ColumnListPtr group_by($group_by);
+		ParseTree::OrderByPtr order_by($order_by);
+		ParseTree::SearchConditionPtr having($having);
+                ParseTree::LimitPtr limit($limit);
+
+		//$$ = new ParseTree::TableExpression(*$from, where, group_by, order_by);
+		$$ = new ParseTree::TableExpression(*$from, where, group_by, order_by, having, limit);
+		delete $from;
+	}
+	;
+
+from_clause:
+		FROM table_ref_commalist { $$ = $2; }
+	;
+
+table_ref_commalist:
+		table_ref
+	{
+		ParseTree::TableReferencePtr ptr($table_ref);
+		$$ = new ParseTree::TableReferenceList(1, ptr);
+	}
+	|	table_ref_commalist[list] ',' table_ref
+	{
+		ParseTree::TableReferencePtr ptr($table_ref);
+		$$ = $list;
+		$$->push_back(ptr);
+	}
+	;
+
+table_ref:
+		table			{ $$ = $1; }
+	|	table range_variable	{ driver.unsupported(); }
+	|	query_term[sub_query]
+	{
+		//ParseTree::TableReferencePtr ptr(new ParseTree::SubQueryResult(ParseTree::SelectFromPtr($sub_query)));
+		//$$ = new ParseTree::TableReferenceList(1, ptr);
+		$$ = new ParseTree::SubQueryResult(ParseTree::SelectFromPtr($sub_query));
+		//$$ = new ParseTree::TableReferenceList(1, ptr);
+	}
+	|	joined_table		{ $$ = $1; }
+	;
+
+joined_table:
+		cross_join		{ $$ = $1; }
+	|	qualified_join	{ $$ = $1; }
+	|	'(' joined_table ')'	{ $$ = $2; }
+	;
+
+cross_join:
+		table_ref[lvalue] CROSS JOIN table_ref[rvalue]
+	{
+		ParseTree::TableReferencePtr lvalue_ptr($lvalue);
+		ParseTree::TableReferencePtr rvalue_ptr($rvalue);
+		$$ = new ParseTree::CrossJoin(lvalue_ptr, rvalue_ptr);
+	}
+	;
+
+qualified_join:
+		table_ref[lvalue] join_type JOIN table_ref[rvalue] join_spec
+	{
+		ParseTree::TableReferencePtr lvalue_ptr($lvalue);
+		ParseTree::TableReferencePtr rvalue_ptr($rvalue);
+		ParseTree::SearchConditionPtr join_ptr($join_spec);
+		$$ = new ParseTree::InnerJoin(lvalue_ptr, rvalue_ptr, join_ptr);
+	}
+	|	table_ref[lvalue] JOIN table_ref[rvalue] join_spec
+	{
+		ParseTree::TableReferencePtr lvalue_ptr($lvalue);
+		ParseTree::TableReferencePtr rvalue_ptr($rvalue);
+		ParseTree::SearchConditionPtr join_ptr($join_spec);
+		$$ = new ParseTree::InnerJoin(lvalue_ptr, rvalue_ptr, join_ptr);
+	}
+	;
+
+join_type:
+		/* empty */
+		INNER
+	;
+
+join_spec:
+		/* empty */			{ driver.unsupported(); }
+	|	join_condition
+/*	|	named_columns_join */
+	;
+
+join_condition:
+		ON search_condition		{ $$ = $2; }
+	;
+
+where_clause:
+		WHERE search_condition	{ $$ = $2; }
+	;
+
+opt_group_by_clause:
+		/* empty */			{ $$ = NULL; }
+	|	GROUP BY column_ref_commalist	{ $$ = $3; }
+	;
+
+column_ref_commalist:
+		column_ref
+	{
+		$$ = new ParseTree::ColumnList(1, *$1);
+		delete $1;
+	}
+	|	column_ref_commalist[list] ',' column_ref
+	{
+		$$ = $list;
+		$$->push_back(*$column_ref);
+		delete $column_ref;
+	}
+	;
+
+opt_having_clause:
+		/* empty */	{ $$ = NULL; }
+	|	having_clause
+	;
+
+having_clause:
+		HAVING search_condition	{ $$ = $2; }
+	;
+
+	/* search conditions */
+
+search_condition:
+		search_condition[lvalue] OR search_condition[rvalue]
+	{
+		ParseTree::SearchConditionPtr lvalue_ptr($lvalue);
+		ParseTree::SearchConditionPtr rvalue_ptr($rvalue);
+		$$ = new ParseTree::OrCondition(lvalue_ptr, rvalue_ptr);
+	}
+	|	search_condition[lvalue] AND search_condition[rvalue]
+	{
+		ParseTree::SearchConditionPtr lvalue_ptr($lvalue);
+		ParseTree::SearchConditionPtr rvalue_ptr($rvalue);
+		$$ = new ParseTree::AndCondition(lvalue_ptr, rvalue_ptr);
+	}
+	|	NOT search_condition			{ driver.unsupported(); }
+	|	'(' search_condition ')'		{ $$ = $2; }
+	|	predicate				{ $$ = $1; }
+	;
+
+predicate:
+		comparison_predicate
+	|	between_predicate
+	|	like_predicate	
+	|	test_for_null		{ driver.unsupported(); }
+	|	in_predicate		{ driver.unsupported(); }
+	|	all_or_any_predicate	{ driver.unsupported(); }
+	|	existence_test	{ driver.unsupported(); }
+	;
+
+comparison_predicate:
+		scalar_exp[lvalue] COMPARISON[op] scalar_exp[rvalue]
+	{
+		ParseTree::ScalarExpressionPtr lvalue_ptr($lvalue);
+		ParseTree::ScalarExpressionPtr rvalue_ptr($rvalue);
+		$$ = new ParseTree::ComparisonPredicate(lvalue_ptr, $op, rvalue_ptr);
+	}
+	|	scalar_exp COMPARISON subquery
+	{
+		driver.unsupported();
+	}
+	;
+
+between_predicate:
+		scalar_exp[exp] NOT BETWEEN scalar_exp[lvalue] AND scalar_exp[rvalue]
+	{
+		ParseTree::ScalarExpressionPtr exp($exp);
+		ParseTree::ScalarExpressionPtr lvalue($lvalue);
+		ParseTree::ScalarExpressionPtr rvalue($rvalue);
+		$$ = new ParseTree::NotBetweenPredicate(exp, lvalue, rvalue);
+	}
+	|	scalar_exp[exp] BETWEEN scalar_exp[lvalue] AND scalar_exp[rvalue]
+	{
+		ParseTree::ScalarExpressionPtr exp($exp);
+		ParseTree::ScalarExpressionPtr lvalue($lvalue);
+		ParseTree::ScalarExpressionPtr rvalue($rvalue);
+		$$ = new ParseTree::BetweenPredicate(exp, lvalue, rvalue);
+	}
+	;
+
+like_predicate:
+		scalar_exp[exp] NOT LIKE atom[a] opt_escape
+        {
+            ParseTree::ScalarExpressionPtr exp($exp);
+            ParseTree::AtomExpressionPtr atom($a);
+            $$ = new ParseTree::LikePredicate(exp, CoGaDB::UNEQUAL, atom);
+        }
+	|	scalar_exp[exp] LIKE atom[a] opt_escape
+        {
+            ParseTree::ScalarExpressionPtr exp($exp);
+            ParseTree::AtomExpressionPtr atom($a);
+            $$ = new ParseTree::LikePredicate(exp, CoGaDB::EQUAL, atom);
+        }
+	;
+
+opt_escape:
+		/* empty */
+	|	ESCAPE atom
+	;
+
+test_for_null:
+		column_ref IS NOT NULLX
+	|	column_ref IS NULLX
+	;
+
+in_predicate:
+		scalar_exp NOT IN '(' subquery ')'
+	|	scalar_exp IN '(' subquery ')'
+	|	scalar_exp NOT IN '(' atom_commalist ')'
+	|	scalar_exp IN '(' atom_commalist ')'
+	;
+
+atom_commalist:
+		atom
+	|	atom_commalist ',' atom
+	;
+
+all_or_any_predicate:
+		scalar_exp COMPARISON any_all_some subquery
+	;
+			
+any_all_some:
+		ANY
+	|	ALL
+	|	SOME
+	;
+
+existence_test:
+		EXISTS subquery
+	;
+
+subquery:
+		'(' SELECT opt_all_distinct selection table_exp ')'
+	;
+
+	/* scalar expressions */
+
+scalar_exp:
+		scalar_exp[lvalue] '+' scalar_exp[rvalue]
+	{
+		ParseTree::ScalarExpressionPtr lvalue($lvalue);
+		ParseTree::ScalarExpressionPtr rvalue($rvalue);
+		$$ = new ParseTree::AlgebraExpression(lvalue, CoGaDB::ADD, rvalue);
+	}
+	|	scalar_exp[lvalue] '-' scalar_exp[rvalue]
+	{
+		ParseTree::ScalarExpressionPtr lvalue($lvalue);
+		ParseTree::ScalarExpressionPtr rvalue($rvalue);
+		$$ = new ParseTree::AlgebraExpression(lvalue, CoGaDB::SUB, rvalue);
+	}
+	|	scalar_exp[lvalue] '*' scalar_exp[rvalue]
+	{
+		ParseTree::ScalarExpressionPtr lvalue($lvalue);
+		ParseTree::ScalarExpressionPtr rvalue($rvalue);
+		$$ = new ParseTree::AlgebraExpression(lvalue, CoGaDB::MUL, rvalue);
+	}
+	|	scalar_exp[lvalue] '/' scalar_exp[rvalue]
+	{
+		ParseTree::ScalarExpressionPtr lvalue($lvalue);
+		ParseTree::ScalarExpressionPtr rvalue($rvalue);
+		$$ = new ParseTree::AlgebraExpression(lvalue, CoGaDB::DIV, rvalue);
+	}
+	|	'+' scalar_exp[exp] %prec UMINUS
+	{
+		$$ = $exp;
+	}
+	|	'-' scalar_exp[exp] %prec UMINUS
+	{
+		ParseTree::AtomExpressionPtr zero;
+		ParseTree::ScalarExpressionPtr exp($exp);
+
+		/* FIXME: this will fail if the type of $exp is not integer */
+		zero = boost::make_shared<ParseTree::AtomExpression>(boost::any(0), CoGaDB::INT);
+		$$ = new ParseTree::AlgebraExpression(zero, CoGaDB::SUB, exp);
+	}
+	|	atom
+	{
+		$$ = $1;
+	}
+	|	column_ref
+	{
+		$$ = new ParseTree::ColumnExpression(*$1);
+		delete $1;
+	}
+	|	function_ref
+	{
+		$$ = $1;
+	}
+	|	'(' scalar_exp ')'
+	{
+		$$ = $2;
+	}
+	;
+
+derived_column:
+		scalar_exp
+	|	scalar_exp AS column_ref
+	{
+		$$ = $scalar_exp;
+		$$->setColumnName(*$column_ref);
+                
+		delete $column_ref;
+	}
+	;
+
+scalar_exp_commalist:
+		derived_column
+	{
+		ParseTree::ScalarExpressionPtr ptr($derived_column);
+		$$ = new ParseTree::ScalarExpressionList(1, ptr);
+	}
+	|	scalar_exp_commalist[list] ',' derived_column
+	{
+		ParseTree::ScalarExpressionPtr ptr($derived_column);
+		/* transfer ownership */
+		$$ = $list;
+		$$->push_back(ptr);
+	}
+	;
+
+atom:
+		parameter_ref	{ driver.unsupported(); }
+	|	literal
+	|	USER	{ driver.unsupported(); }
+	;
+
+parameter_ref:
+		parameter
+	|	parameter parameter
+	|	parameter INDICATOR parameter
+	;
+
+function_ref:
+		AMMSC '(' '*' ')'			{ driver.unsupported(); }
+	|	AMMSC '(' DISTINCT column_ref ')'	{ driver.unsupported(); }
+	|	AMMSC '(' ALL scalar_exp ')'		{ driver.unsupported(); }
+	|	AMMSC[method] '(' scalar_exp ')'
+	{
+		ParseTree::ScalarExpressionPtr scalar_exp($scalar_exp);
+		$$ = new ParseTree::FunctionExpression($method, scalar_exp);
+	}
+	|	AMMSC[method] '(' scalar_exp ')' AS column_ref
+        {
+		ParseTree::ScalarExpressionPtr scalar_exp($scalar_exp);
+		$$ = new ParseTree::FunctionExpression($method, scalar_exp, *$column_ref);
+		//$$->setColumnName(*$column_ref);
+        }
+	;
+
+literal:
+		STRING
+	{
+		$$ = new ParseTree::AtomExpression(boost::any(*$1), CoGaDB::VARCHAR);
+		delete $1;
+	}
+	|	INTNUM
+	{
+		$$ = new ParseTree::AtomExpression(*$1, CoGaDB::INT);
+		delete $1;
+	}
+	|	APPROXNUM
+	{
+		$$ = new ParseTree::AtomExpression(*$1, CoGaDB::DOUBLE);
+		delete $1;
+	}
+	;
+
+	/* miscellaneous */
+
+table:
+		NAME
+	{
+		$$ = new ParseTree::TableName(*$1);
+		delete $1;
+	}
+	|	NAME '.' NAME
+	{
+		driver.unsupported();
+	}
+	;
+
+column_ref:
+		NAME
+	|	NAME '.' NAME		{ driver.unsupported(); }	/* needs semantics */
+	|	NAME '.' NAME '.' NAME	{ driver.unsupported(); }
+	;
+
+		/* data types */
+
+data_type:
+		CHARACTER /* NOTE: also "CHAR" */
+		{ $$ = CoGaDB::CHAR; /* single character */ }
+	|	CHARACTER '(' INTNUM ')'
+		{ $$ = CoGaDB::VARCHAR; delete $INTNUM; /* FIXME: fixed-length string */ }
+	|	VARCHAR /* NOTE: also "CHARACTER VARYING" and "CHAR VARYING" */
+		{ $$ = CoGaDB::VARCHAR; }
+	|	VARCHAR '(' INTNUM ')'
+		{ $$ = CoGaDB::VARCHAR; delete $INTNUM; /* FIXME: maximum-length string */ }
+	|	DATE
+		{ $$ = CoGaDB::DATE; /* FIXME: maximum-length string */ }
+	|	NUMERIC
+		{ driver.unsupported(); }
+	|	NUMERIC '(' INTNUM ')'
+		{ driver.unsupported(); }
+	|	NUMERIC '(' INTNUM ',' INTNUM ')'
+		{ driver.unsupported(); }
+	|	DECIMAL
+		{ driver.unsupported(); }
+	|	DECIMAL '(' INTNUM ')'
+		{ driver.unsupported(); }
+	|	DECIMAL '(' INTNUM ',' INTNUM ')'
+		{ driver.unsupported(); }
+	|	INTEGER /* NOTE: also "INT" */
+		{ $$ = CoGaDB::INT; }
+	|	UNSIGNED INTEGER /* NOTE: also "UINT32" */
+		{ $$ = CoGaDB::UINT32; }
+	|	SMALLINT
+		{ $$ = CoGaDB::INT; }
+	|	UNSIGNED BIGINT
+		{ $$ = CoGaDB::OID; }
+	|	FLOAT
+		{ $$ = CoGaDB::FLOAT; }
+	|	FLOAT '(' INTNUM ')'
+		{ $$ = CoGaDB::FLOAT; delete $INTNUM; /* FIXME: precision */ }
+	|	REAL
+		{ $$ = CoGaDB::DOUBLE; /* FIXME: precision */ }
+	|	DOUBLE PRECISION
+		{ $$ = CoGaDB::DOUBLE; /* FIXME: precision */ }
+	;
+
+	/* the various things you can name */
+
+column:		NAME
+	;
+
+cursor:		NAME
+	;
+
+module:		NAME
+	;
+
+parameter:
+		':' NAME
+	;
+
+procedure:	NAME
+	;
+
+range_variable:	NAME
+	;
+
+user:		NAME
+	;
+
+	/* embedded condition things */
+sql:		WHENEVER NOT FOUND when_action
+	|	WHENEVER SQLERROR when_action
+	;
+
+when_action:	GOTO NAME
+	|	CONTINUE
+	;
+
+/*
+ * Equilogue
+ */
+%%
+
+namespace CoGaDB {
+
+#ifdef BISON_VERSION_3_OR_HIGHER
+void SQL::Parser::error(const std::string &m)
+{
+	driver.error(m);
+}
+#else
+void SQL::Parser::error(const location_type &l, const std::string &m)
+{
+	driver.error(m);
+}
+#endif
+
+} /* namespace CoGaDB */

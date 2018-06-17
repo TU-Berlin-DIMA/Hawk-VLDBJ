@@ -1,0 +1,14 @@
+{
+    "QUERY_PLAN":{
+        "OPERATOR_NAME":"SORT BY",
+        "SORT_COLUMNS":[{
+            "COLUMN_NAME":"P_BRAND",
+            "ORDER":"ASCENDING"
+        },{
+            "COLUMN_NAME":"P_NAME",
+            "ORDER":"ASCENDING"
+        }],
+        "LEFT_CHILD":{},
+        "RIGHT_CHILD":null
+    }
+}

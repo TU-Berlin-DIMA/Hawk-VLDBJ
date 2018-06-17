@@ -1,0 +1,63 @@
+{
+    "QUERY_PLAN":{
+        "OPERATOR_NAME":"STORE_TABLE",
+        "TABLE_NAME": "MY_SORTED_PART_TABLE",
+        "PERSIST_TABLE_ON_DISK": false,
+        "LEFT_CHILD":{
+            "OPERATOR_NAME":"EXPORT_INTO_FILE",
+	          "PATH_TO_DATA_FILE": "my_sorted_part.tbl",
+	          "FIELD_SEPARATOR": "|",
+            "LEFT_CHILD":{
+                "OPERATOR_NAME":"SORT BY",
+                "SORT_COLUMNS":[
+                    {
+                        "COLUMN_NAME":"P_BRAND",
+                        "ORDER":"ASCENDING"
+                    },
+                    {
+                        "COLUMN_NAME":"P_NAME",
+                        "ORDER":"ASCENDING"
+                    }
+                ],
+                "LEFT_CHILD":{
+                    "OPERATOR_NAME":"CREATE_TABLE",
+                    "TABLE_NAME": "MY_TABLE",
+	                  "TABLE_SCHEMA": [{
+		                        "ATTRIBUTE_TYPE":"INT",
+		                        "ATTRIBUTE_NAME":"P_PARTKEY"
+	                      },{
+		                        "ATTRIBUTE_TYPE":"VARCHAR",
+		                        "ATTRIBUTE_NAME":"P_NAME"
+	                      },{
+		                        "ATTRIBUTE_TYPE":"VARCHAR",
+		                        "ATTRIBUTE_NAME":"P_MFGR"
+	                      },{
+		                        "ATTRIBUTE_TYPE":"VARCHAR",
+		                        "ATTRIBUTE_NAME":"P_CATEGORY"
+	                      },{
+		                        "ATTRIBUTE_TYPE":"VARCHAR",
+		                        "ATTRIBUTE_NAME":"P_BRAND"
+	                      },{
+		                        "ATTRIBUTE_TYPE":"VARCHAR",
+		                        "ATTRIBUTE_NAME":"P_COLOR"
+	                      },{
+		                        "ATTRIBUTE_TYPE":"VARCHAR",
+		                        "ATTRIBUTE_NAME":"P_TYPE"
+	                      },{
+		                        "ATTRIBUTE_TYPE":"FLOAT",
+		                        "ATTRIBUTE_NAME":"P_SIZE"
+	                      },{
+		                        "ATTRIBUTE_TYPE":"VARCHAR",
+		                        "ATTRIBUTE_NAME":"P_CONTAINER"
+	                      }
+                    ],
+	                  "PATH_TO_DATA_FILE": "/home/sebastian/benchmarks/star_schema_benchmark/SF1/part.tbl",
+	                  "FIELD_SEPARATOR": "|"
+                },
+                "RIGHT_CHILD":null
+            },
+            "RIGHT_CHILD":null
+        },
+        "RIGHT_CHILD":null
+    }
+}

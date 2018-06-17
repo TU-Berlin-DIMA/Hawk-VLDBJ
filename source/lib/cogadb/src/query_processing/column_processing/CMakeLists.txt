@@ -1,0 +1,11 @@
+add_source_cogadb(bitmap_operator.cpp
+                  column_bitmap_fetch_join_operator.cpp
+                  column_bitmap_selection_operator.cpp
+                  column_comparator.cpp
+                  column_convert_bitmap_to_positionlist.cpp
+                  column_convert_positionlist_to_bitmap.cpp
+                  column_fetch_join_operator.cpp
+                  cpu_algebra_operator.cpp
+                  cpu_column_constant_filter_operator.cpp
+                  cpu_columnscan_operator.cpp
+                  positionlist_operator.cpp)

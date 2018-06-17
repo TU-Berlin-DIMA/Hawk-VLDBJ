@@ -1,0 +1,1 @@
+set code_gen.opt.enable_predication=true

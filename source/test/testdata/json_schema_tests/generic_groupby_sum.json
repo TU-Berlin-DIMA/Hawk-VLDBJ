@@ -1,0 +1,27 @@
+{
+    "QUERY_PLAN":{
+        "OPERATOR_NAME":"GENERIC_GROUPBY",
+        "GROUPING_COLUMNS":[{
+            "ATTRIBUTE_REFERENCE":{
+                "COLUMN_NAME":"LO_SHIPMODE",
+                "TABLE_NAME":"LINEORDER",
+	              "VERSION": 1,
+                "RESULT_NAME": "SHIPMODE"
+            }
+        }],
+        "AGGREGATION_SPECIFICATION":[{
+            "AGGREGATION_FUNCTION":"SUM",
+            "ATTRIBUTE_REFERENCE":{
+                "COLUMN_NAME":"LO_REVENUE",
+                "TABLE_NAME":"LINEORDER",
+	              "VERSION": 1,
+                "RESULT_NAME":"SUM_REVENUE"
+            }
+        }],
+        "LEFT_CHILD":{
+            "OPERATOR_NAME":"TABLE_SCAN",
+            "TABLE_NAME":"LINEORDER"
+        },
+        "RIGHT_CHILD":null
+    }
+}

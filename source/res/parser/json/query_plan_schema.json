@@ -1,0 +1,452 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "/",
+    "definitions": {
+        "operator": {
+            "type": "object",
+            "anyOf": [
+                {"$ref": "#/definitions/create_table"},
+                {"$ref": "#/definitions/delete_table"},
+                {"$ref": "#/definitions/cross_join"},
+                {"$ref": "#/definitions/export_into_file"},
+                {"$ref": "#/definitions/generic_groupby"},
+                {"$ref": "#/definitions/generic_selection"},
+                {"$ref": "#/definitions/generic_join"},
+                {"$ref": "#/definitions/map_udf"},
+                {"$ref": "#/definitions/projection"},
+                {"$ref": "#/definitions/sort_by"},
+                {"$ref": "#/definitions/store_table"},
+                {"$ref": "#/definitions/table_scan"}
+            ]
+        },
+        "create_table": {
+            "type": "object",
+            "properties": {
+                "OPERATOR_NAME": {
+                    "type": "string",
+                    "pattern": "^CREATE_TABLE$"
+                },
+                "TABLE_NAME": {
+                    "type": "string"
+                },
+                "TABLE_SCHEMA": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "ATTRIBUTE_TYPE": {
+                                "type": "string"
+                            },
+                            "ATTRIBUTE_NAME": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                },
+                "PATH_TO_DATA_FILE": {
+                    "type": "string"
+                },
+                "FIELD_SEPARATOR": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false
+        },
+        "delete_table": {
+            "type": "object",
+            "properties": {
+                "OPERATOR_NAME": {
+                    "type": "string",
+                    "pattern": "^DELETE_TABLE$"
+                },
+                "TABLE_NAME": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false
+        },
+        "cross_join": {
+            "type": "object",
+            "properties": {
+                "OPERATOR_NAME": {
+                    "type": "string",
+                    "pattern": "^CROSS_JOIN$"
+                },
+                "LEFT_CHILD": {"$ref": "#/definitions/operator"},
+                "RIGHT_CHILD": {"$ref": "#/definitions/operator"}
+            },
+            "additionalProperties": false
+        },
+        "export_into_file": {
+            "type": "object",
+            "properties": {
+                "OPERATOR_NAME": {
+                    "type": "string",
+                    "pattern": "^EXPORT_INTO_FILE$"
+                },
+                "PATH_TO_DATA_FILE": {
+                    "type": "string"
+                },
+                "FIELD_SEPARATOR": {
+                    "type": "string"
+                },
+                "LEFT_CHILD": {"$ref": "#/definitions/operator"},
+                "RIGHT_CHILD": {"type": "null"}
+            },
+            "additionalProperties": false
+        },
+        "generic_groupby": {
+            "type": "object",
+            "properties": {
+                "OPERATOR_NAME": {
+                    "type": "string",
+                    "pattern": "^GENERIC_GROUPBY$"
+                },
+                "GROUPING_COLUMNS": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/attribute_reference"}
+                },
+                "AGGREGATION_SPECIFICATION": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/aggregation_function"}
+                },
+                "LEFT_CHILD": {"$ref": "#/definitions/operator"},
+                "RIGHT_CHILD": {"type": "null"}
+            },
+            "additionalProperties": false
+        },
+        "generic_selection": {
+            "type": "object",
+            "properties": {
+                "OPERATOR_NAME": {
+                    "type": "string",
+                    "pattern": "^GENERIC_SELECTION$"
+                },
+                "PREDICATE": {
+                    "type": "object",
+                    "anyOf": [
+                        {"$ref": "#/definitions/predicate_list"},
+                        {"$ref": "#/definitions/column_column_predicate"},
+                        {"$ref": "#/definitions/column_constant_predicate"}
+                    ]
+                },
+                "LEFT_CHILD": {"$ref": "#/definitions/operator"},
+                "RIGHT_CHILD": {"type": "null"}
+            },
+            "additionalProperties": false
+        },
+        "generic_join": {
+            "type": "object",
+            "properties": {
+                "OPERATOR_NAME": {
+                    "type": "string",
+                    "pattern": "^GENERIC_JOIN$"
+                },
+                "JOIN_TYPE": {
+                    "type": "string"
+                },
+                "PREDICATE": {"$ref": "#/definitions/predicate_list"},
+                "LEFT_CHILD": {"$ref": "#/definitions/operator"},
+                "RIGHT_CHILD": {"$ref": "#/definitions/operator"}
+            },
+            "additionalProperties": false
+        },
+        "map_udf": {
+            "type": "object",
+            "properties": {
+                "OPERATOR_NAME": {
+                    "type": "string",
+                    "pattern": "^MAP_UDF$"
+                },
+                "MAP_UDF_OUTPUT_ATTRIBUTES": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "ATTRIBUTE_TYPE": {
+                                "type": "string"
+                            },
+                            "ATTRIBUTE_NAME": {
+                                "type": "string"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                },
+                "MAP_UDF_CODE": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "LEFT_CHILD": {"$ref": "#/definitions/operator"},
+                "RIGHT_CHILD": {"type": "null"}
+            },
+            "additionalProperties": false
+        },
+        "projection": {
+            "type": "object",
+            "properties": {
+                "OPERATOR_NAME": {
+                    "type": "string",
+                    "pattern": "^PROJECTION$"
+                },
+                "ATTRIBUTES": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/attribute_reference"}
+                },
+                "LEFT_CHILD": {"$ref": "#/definitions/operator"},
+                "RIGHT_CHILD": {"type": "null"}
+            },
+            "additionalProperties": false
+        },
+        "table_scan": {
+            "type": "object",
+            "properties": {
+                "OPERATOR_NAME": {
+                    "type": "string",
+                    "pattern": "^TABLE_SCAN$"
+                },
+                "TABLE_NAME": {
+                    "type": "string"
+                },
+                "VERSION": {
+                    "type": "integer",
+                    "required": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "sort_by": {
+            "type": "object",
+            "properties": {
+                "OPERATOR_NAME": {
+                    "type": "string",
+                    "pattern": "^SORT BY$"
+                },
+                "SORT_COLUMNS": {
+                    "type": "array",
+                    "items": {
+                        "COLUMN_NAME": {
+                            "type": "string"
+                        },
+                        "ORDER": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "LEFT_CHILD": {"$ref": "#/definitions/operator"},
+                "RIGHT_CHILD": {"type": "null"}
+            },
+            "additionalProperties": false
+        },
+        "store_table": {
+            "type": "object",
+            "properties": {
+                "OPERATOR_NAME": {
+                    "type": "string",
+                    "pattern": "^STORE_TABLE$"
+                },
+                "TABLE_NAME": {
+                    "type": "string"
+                },
+                "PERSIST_TABLE_ON_DISK": {
+                    "type": "boolean"
+                },
+                "LEFT_CHILD": {"$ref": "#/definitions/operator"},
+                "RIGHT_CHILD": {"type": "null"}
+            },
+            "additionalProperties": false
+        },
+        "aggregation_function": {
+            "type": "object",
+            "oneOf": [
+                {"$ref": "#/definitions/aggregation_function_builtin"},
+                {"$ref": "#/definitions/aggregation_function_udf"}
+            ]
+        },
+        "aggregation_function_builtin": {
+            "type": "object",
+            "properties": {
+                "AGGREGATION_FUNCTION": {
+                    "type": "string"
+                },
+                "ATTRIBUTE_REFERENCE": {"$ref": "#/definitions/attribute"},
+                "RESULT_NAME": {
+                    "type": "string",
+                    "required": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "aggregation_function_udf": {
+            "type": "object",
+            "properties": {
+                "AGGREGATION_FUNCTION": {
+                    "type": "string",
+                    "pattern": "^UDF$"
+                },
+                "REDUCE_UDF": {
+                    "type": "object",
+                    "properties": {
+                        "REDUCE_UDF_TYPE": {
+                            "type": "string"
+                        },
+                        "REDUCE_UDF_PAYLOAD_ATTRIBUTES": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "ATTRIBUTE_TYPE": {
+                                        "type": "string"
+                                    },
+                                    "ATTRIBUTE_NAME": {
+                                        "type": "string"
+                                    },
+                                    "ATTRIBUTE_INIT_VALUE": {
+                                        "type": "string"
+                                    }
+                                },
+                                "additionalProperties": false
+                            }
+                        },
+                        "REDUCE_UDF_OUTPUT_ATTRIBUTES": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "ATTRIBUTE_TYPE": {
+                                        "type": "string"
+                                    },
+                                    "ATTRIBUTE_NAME": {
+                                        "type": "string"
+                                    }
+                                },
+                                "additionalProperties": false
+                            }
+                        },
+                        "REDUCE_UDF_CODE": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "REDUCE_UDF_FINAL_CODE": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "attribute_reference": {
+            "type": "object",
+            "properties": {
+                "ATTRIBUTE_REFERENCE": {"$ref": "#/definitions/attribute"}
+            },
+            "additionalProperties": false
+        },
+        "attribute": {
+            "type": "object",
+            "properties": {
+                "COLUMN_NAME": {
+                    "type": "string"
+                },
+                "TABLE_NAME": {
+                    "type": "string"
+                },
+                "VERSION": {
+                    "type": "integer"
+                },
+                "RESULT_NAME": {
+                    "type": "string",
+                    "required": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "predicate_list": {
+            "type": "object",
+            "properties": {
+                "PREDICATE_TYPE": {
+                    "type": "string"
+                },
+                "PREDICATES": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/predicate"}
+                }
+            },
+            "additionalProperties": false
+        },
+        "predicate": {
+            "type": "object",
+            "properties": {
+                "PREDICATE": {
+                    "type": "object",
+                    "oneOf": [
+                        {"$ref": "#/definitions/column_column_predicate"},
+                        {"$ref": "#/definitions/column_constant_predicate"}
+                    ]
+                }
+            },
+            "additionalProperties": false
+        },
+        "column_column_predicate": {
+            "type": "object",
+            "properties": {
+                "PREDICATE_TYPE": {
+                    "type": "string"
+                },
+                "PREDICATE_COMPARATOR": {
+                    "type": "string"
+                },
+                "LEFT_HAND_SIDE_ATTRIBUTE_REFERENCE": {
+                    "$ref": "#/definitions/attribute"
+                },
+                "RIGHT_HAND_SIDE_ATTRIBUTE_REFERENCE": {
+                    "$ref": "#/definitions/attribute"
+                }
+            },
+            "additionalProperties": false
+        },
+        "column_constant_predicate": {
+            "type": "object",
+            "properties": {
+                "PREDICATE_TYPE": {
+                    "type": "string"
+                },
+                "PREDICATE_COMPARATOR": {
+                    "type": "string"
+                },
+                "ATTRIBUTE_REFERENCE": {
+                    "$ref": "#/definitions/attribute"
+                },
+                "CONSTANT": {
+                    "type": "object",
+                    "properties": {
+                        "CONSTANT_VALUE": {
+                            "type": "string"
+                        },
+                        "CONSTANT_TYPE": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "type": "object",
+    "properties": {
+        "QUERY_PLAN": {
+            "$ref": "#/definitions/operator"
+        }
+    },
+    "additionalProperties": false
+}

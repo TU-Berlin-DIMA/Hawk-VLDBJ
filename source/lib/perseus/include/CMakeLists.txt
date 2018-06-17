@@ -1,0 +1,29 @@
+set(INCLUDE_FILES
+        Configuration.hpp
+        CurrentRuntimeVariantScorer.hpp
+        DefaultVariantPool.hpp
+        DiscreteFeature.hpp
+        ExecutionContext.hpp
+        ElitismUpdateStrategy.hpp
+        ErrorFunctionVariantScorer.hpp
+        Feature.hpp
+        FullPoolBaselineStrategy.hpp
+        GeneticUpdateStrategy.hpp
+        InitializationStrategy.hpp
+        IterativeUpdateStrategy.hpp
+        MarkovUpdateStrategy.hpp
+        RandomizedInitializationStrategy.hpp
+        RandomizedSelectionStrategy.hpp
+        SelectionStrategy.hpp
+        TotalCallsVariantScorer.hpp
+        TotalRuntimeVariantScorer.hpp
+        utils.h
+        UpdateStrategy.hpp
+        VWGreedySelectionStrategy.hpp
+        VWGreedyBaselineStrategy.hpp
+        Variant.hpp
+        VariantGenerator.hpp
+        VariantPool.hpp
+        VariantScorer.hpp)
+
+install(FILES ${INCLUDE_FILES} DESTINATION "${CMAKE_INSTALL_PREFIX}/include/perseus")

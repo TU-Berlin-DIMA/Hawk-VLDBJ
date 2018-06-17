@@ -1,0 +1,2 @@
+add_source_cogadb(multi_variant_pipeline.cpp)
+add_source_cogadb(variant_generator_wrapper.cpp)

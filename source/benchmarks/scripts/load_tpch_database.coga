@@ -1,0 +1,62 @@
+
+
+
+optimizer flags: -O3 -march=native -mtune=native -msse -msse2 -msse3 -msse4 -mfpmath=sse -mmmx -fomit-frame-pointer  -falign-functions  -falign-jumps  -falign-loops -falign-labels  -freorder-blocks -freorder-blocks-and-partition -fprefetch-loop-arrays -ftree-vect-loop-version
+
+alternative optimizer flags: -O6 -fomit-frame-pointer -falign-functions=4 -falign-loops=4 -falign-jumps=4 -ftree-vectorize -fexpensive-optimizations -frerun-cse-after-loop  -funroll-loops -frerun-loop-opt -finline-functions 
+
+
+#-pg -O3 -march=native -mtune=native
+
+set path_to_database=/media/1A2AA9012AA8DAD1_/CoGaDB_databases/tpch_sf1/
+create_tpch_database /media/1A2AA9012AA8DAD1_/benchmarks/tpch_data/
+
+set path_to_database=/media/1A2AA9012AA8DAD1_/CoGaDB_databases/ssb_sf1/
+create_ssb_database /media/1A2AA9012AA8DAD1_/benchmarks/star_schema_benchmark/SF1/
+
+set path_to_database=/media/linux_part/home/DATA/coga_databases/ssb_sf1
+create_ssb_database /media/linux_part/home/DATA/benchmarks/star_schema_benchmark/SF1
+
+create_ssb_database /home/sebastian/benchmarks/star_schema_benchmark/SF1/
+
+set path_to_database=/media/linux_part/home/DATA/coga_databases/ssb_sf1
+
+
+set path_to_database=/home/DATA/coga_databases/ssb_sf1
+
+exec select sum(lo_discount) from dates join lineorder on LO_ORDERDATE=D_DATEKEY;
+
+
+exec select sum(lo_discount) from lineorder join dates on LO_ORDERDATE=D_DATEKEY;
+set path_to_database=/home/sebastian/gpudbms/cogadb/tmp_db
+loaddatabase
+exec select sum(lo_revenue), d_year, p_brand from lineorder, dates, part, supplier where lo_orderdate = d_datekey and lo_partkey = p_partkey and lo_suppkey = s_suppkey and p_brand between 'MFGR#2221' and 'MFGR#2228' and s_region = 'ASIA' group by d_year, p_brand order by d_year, p_brand;
+
+
+set path_to_database=/home/sebastian/cogadb_databases/ssb_sf1
+set path_to_database=/home/DATA/coga_databases/ssb_sf1
+loaddatabase
+setdevice cpu
+ssb11
+ssb12
+ssb13
+ssb21
+ssb22
+ssb23
+ssb31
+ssb32
+ssb33
+ssb34
+ssb41
+ssb42
+ssb43
+
+
+set path_to_database=/home/sebastian/cogadb_databases/ssb_sf1/
+create_ssb_database /home/sebastian/benchmarks/star_schema_benchmark/SF1/
+
+
+set path_to_database=/home/sebastian/cogadb_databases/ssb_sf1
+loaddatabase
+setdevice cpu
+exec select sum(lo_discount) from lineorder join dates on LO_ORDERDATE=D_DATEKEY;

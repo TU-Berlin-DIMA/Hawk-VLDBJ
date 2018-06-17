@@ -1,0 +1,91 @@
+\documentclass[a4paper]{book}
+\usepackage{makeidx}
+\usepackage{natbib}
+%\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{ifthen}
+\usepackage[table]{xcolor}
+\usepackage{textcomp}
+\usepackage{alltt}
+\usepackage[utf8]{inputenc}
+\usepackage{mathptmx}
+\usepackage[scaled=.90]{helvet}
+\usepackage{courier}
+\usepackage{sectsty}
+\usepackage[titles]{tocloft}
+\usepackage{doxygen}
+\lstset{language=C++,inputencoding=utf8,basicstyle=\footnotesize,breaklines=true,breakatwhitespace=true,tabsize=3,numbers=left }
+\usepackage[pdftex]{graphicx}
+\makeindex
+\setcounter{tocdepth}{3}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\familydefault}{\sfdefault}
+\hfuzz=15pt
+\setlength{\emergencystretch}{15pt}
+\hbadness=750
+\tolerance=750
+
+\begin{document}
+
+\begin{titlepage}
+ \begin{center}
+%  {\LARGE Otto-von-Guericke-University Magdeburg}\\
+%  \begin{figure}[h]
+%   \hbox{}\hfill
+%    \begin{minipage}[t]{10cm}
+%      \begin{center}
+%%        \includegraphics[width=5cm]{figures/otto}
+%        \includegraphics{hype_logo_300width.png}
+%      \end{center}
+%    \end{minipage} 
+%   \hfill\hbox{}
+%  \end{figure}
+%  {\large Fakult"at f"ur Informatik \\ Institut f"ur Technische
+%und Betriebliche Informationssysteme \\ Arbeitsgruppe Datenbanken \\[2cm]}
+  {\huge HyPE: A Hybrid Query Processing Engine for Co-Processing in Database Systems\\[1cm]}
+  %{\Large\bf  Ein selbstlernendes Kostenmodell für die Verteilung von Datenbankoperationen auf einer hybriden CPU/GPU Architektur\\[1.0cm]} %Self-Tuning compute Device
+  {\Large\bf User Manual\\[1.0cm]} 
+% Scheduler for Database Operations
+  {\large Version 0.2}\\[0.2cm]
+  \begin{figure}[h]
+   \hbox{}\hfill
+    \begin{minipage}[t]{10cm}
+      \begin{center}
+%        \includegraphics[width=5cm]{figures/otto}
+        \includegraphics{hype_logo_300width.png}
+      \end{center}
+    \end{minipage} 
+   \hfill\hbox{}
+  \end{figure}
+  {\LARGE Otto-von-Guericke-University Magdeburg}\\
+  {\large School of Computer Science \\ Department of Technical and Business Information Systems \\ Database and Information Systems Group \\[2cm]}
+\vfill
+  {\small Authors:}\\[0.2cm] {\large Sebastian Breß}\\[0.2cm]{\large Robin Haberkorn}\\[0.2cm] {\large Steven Ladewig}\\[0.2cm]
+\vfill
+%  {\small 26. Februar 2012}\\[0.8cm] {\small Betreuer:}\\[0.2cm] 
+%  %{\large Prof. Dr. rer. nat. habil. Gunter Saake,\\Dr.-Ing. Eike Schallehn}\\[0.2cm]
+%  %{\large Dr.-Ing. Eike Schallehn,\\Prof. Dr.-Ing. habil. Kai-Uwe Sattler}\\[0.2cm]
+%  {\large Dr.-Ing. Eike Schallehn}\\[0.2cm]
+%  {\small Universit"at Magdeburg\\Fakult"at f"ur Informatik\\Postfach 4120,
+%  D--39016 Magdeburg\\Germany}\\[0.2cm]
+%  {\large Prof. Dr.-Ing. habil. Kai-Uwe Sattler}\\[0.2cm]
+%  {\small Technische Universität Ilmenau\\ Fakultät für Informatik und Automatisierung\\Postfach 100 565, D--98684 Ilmenau\\Germany}
+ \end{center}
+\end{titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Titelr"uckseite: Bibliographische Angaben
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\thispagestyle{empty}
+\vspace*{\fill}
+%\begin{minipage}{8.2cm}
+%\textbf{Breß, Sebastian:}\\
+%\emph{Ein selbstlernendes Entscheidungsmodell für die Verteilung von Datenbankoperationen auf CPU/GPU-Systemen}\\Masterarbeit, 
+%Otto"=von"=Guericke"=Universit"at Magdeburg, 2012.
+%\end{minipage}
+\newpage
+\tableofcontents

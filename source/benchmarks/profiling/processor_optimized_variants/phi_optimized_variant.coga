@@ -1,0 +1,27 @@
+#aggregation: sequential-true-1-8-murmur3-linear_probing-atomic_workgroup
+#projection (best config): sequential-true-parallel_three_pass-500000
+#projection (best config with coalesced mem access, not significantly slower): coalesced-true-parallel_three_pass-10000
+#general config
+set code_gen.exec_strategy=opencl
+set default_hash_table=ocl_linear_probing
+set enable_parallel_pipelines=false
+set code_gen.enable_caching=true
+set code_gen.num_threads=1
+#generic variations
+set code_gen.memory_access=sequential
+set code_gen.opt.enable_predication=false
+#projection pipeline config
+set code_gen.pipe_exec_strategy=parallel_three_pass
+set code_gen.projection.cpu.global_size=1000000
+set code_gen.projection.gpu.global_size=1000000
+#aggregation pipeline config
+set code_gen.opt.ocl_grouped_aggregation.hack.enable_manual_ht_size=true
+set code_gen.opt.ocl_grouped_aggregation.hack.ht_size=2000
+set code_gen.opt.ocl_grouped_aggregation_strategy=atomic_workgroup
+set code_gen.opt.ocl_grouped_aggregation_strategy=atomic
+
+set code_gen.opt.ocl_grouped_aggregation.atomic.workgroup.local_size=512
+#set code_gen.opt.ocl_grouped_aggregation.gpu.global_size_multiplier=8
+set code_gen.opt.ocl_grouped_aggregation.gpu.global_size_multiplier=1024
+
+set code_gen.opt.ocl_grouped_aggregation_hashtable=linear_probing

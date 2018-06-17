@@ -1,0 +1,14 @@
+Store the path to the cogadb database in the file PATH_TO_COGADB_DATABASES (you can use the template PATH_TO_COGADB_DATABASES.example).
+Then, you can run the experiments by executing the script 'run_experiments_aborted_gpu_operators.sh'.
+The results will be stored in the directory 'experimental_result_data'. 
+
+For the benchmark to work, you need to prepare a few star schema databases with certain scale factors (e.g., 1, 5,10, and 15) and store the list of scale factors in the file
+SCALE_FACTORS_TO_BENCHMARK (see SCALE_FACTORS_TO_BENCHMARK.example). The databases should be in the PATH_TO_COGADB_DATABASES directory and should be named ssb_fi, 
+where i is the scale factor (e.g., ssb_sf1, ssb_sf5, ssb_sf10, and ssb_sf15 for a scale factor list of 1, 5, 10, and 15). Finally, you need to specify the path to the cogadb executable, by writing it in the file PATH_TO_COGADB_EXECUTABLE (see PATH_TO_COGADB_EXECUTABLE.example).
+
+To configure the query to un, create a file QUERYID, and store the id of the query from the Star Schema Benchmark you want to benchmark (see example file QUERYID.example). Valid query ids are:
+11, 12, 13, 21, 22, 23, 31, 32, 33, 34, 41, 42, 43
+
+CoGaDB's optimizer HyPE can be configured as well. For that, we only have to create a hype.conf file, where we can set hypes parameters. The most existing parameter for this experiment is the optimization criterion. See hype.conf.example for an example and possible configuration variants. 
+HINT: hype.conf and startup.coga have to be in the working directory of CoGaDB, otherwise they have no effect!
+

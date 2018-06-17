@@ -1,0 +1,36 @@
+{
+    "QUERY_PLAN":{
+        "OPERATOR_NAME":"CREATE_TABLE",
+        "TABLE_NAME": "MY_TABLE",
+	      "TABLE_SCHEMA": [{
+		        "ATTRIBUTE_TYPE":"INT",
+		        "ATTRIBUTE_NAME":"P_PARTKEY"
+	      },{
+		        "ATTRIBUTE_TYPE":"VARCHAR",
+		        "ATTRIBUTE_NAME":"P_NAME"
+	      },{
+		        "ATTRIBUTE_TYPE":"VARCHAR",
+		        "ATTRIBUTE_NAME":"P_MFGR"
+	      },{
+		        "ATTRIBUTE_TYPE":"VARCHAR",
+		        "ATTRIBUTE_NAME":"P_CATEGORY"
+	      },{
+		        "ATTRIBUTE_TYPE":"VARCHAR",
+		        "ATTRIBUTE_NAME":"P_BRAND"
+	      },{
+		        "ATTRIBUTE_TYPE":"VARCHAR",
+		        "ATTRIBUTE_NAME":"P_COLOR"
+	      },{
+		        "ATTRIBUTE_TYPE":"VARCHAR",
+		        "ATTRIBUTE_NAME":"P_TYPE"
+	      },{
+		        "ATTRIBUTE_TYPE":"FLOAT",
+		        "ATTRIBUTE_NAME":"P_SIZE"
+	      },{
+		        "ATTRIBUTE_TYPE":"VARCHAR",
+		        "ATTRIBUTE_NAME":"P_CONTAINER"
+	      }],
+	      "PATH_TO_DATA_FILE": "/home/sebastian/benchmarks/star_schema_benchmark/SF1/part.tbl",
+	      "FIELD_SEPARATOR": "|"
+    }
+}

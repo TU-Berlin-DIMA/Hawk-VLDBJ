@@ -1,0 +1,23 @@
+add_subdirectory(column_processing)
+add_subdirectory(extension)
+
+add_source_cogadb(chain_join_operator.cpp
+                  column_computation_algebra_operator.cpp
+                  column_computation_constant_operator.cpp
+                  complex_selection_operator.cpp
+                  cross_join_operator.cpp
+                  fetch_join_operator.cpp
+                  generate_constant_column_operator.cpp
+                  groupby_operator.cpp
+                  indexed_tuple_reconstruction_operator.cpp
+                  invisible_join_operator.cpp
+                  join_operator.cpp
+                  operator_extensions.cpp
+                  pk_fk_join_operator.cpp
+                  projection_operator.cpp
+                  query_processor.cpp
+                  rename_operator.cpp
+                  scan_operator.cpp
+                  selection_operator.cpp
+                  sort_operator.cpp
+                  udf_operator.cpp)

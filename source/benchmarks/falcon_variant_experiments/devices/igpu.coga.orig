@@ -1,0 +1,4 @@
+set code_gen.cl_device_type=igpu
+set code_gen.num_threads=1
+set code_gen.gpu.global_size=3072
+set code_gen.enable_caching=true

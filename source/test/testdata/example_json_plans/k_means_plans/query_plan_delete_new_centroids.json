@@ -1,0 +1,6 @@
+{
+  "QUERY_PLAN":{
+    "OPERATOR_NAME":"DELETE_TABLE",
+    "TABLE_NAME":"NEW_CENTROIDS"
+  }
+}

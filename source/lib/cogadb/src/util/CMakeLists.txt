@@ -1,0 +1,30 @@
+add_subdirectory(genomics_extension)
+add_subdirectory(opencl)
+
+add_source_cogadb(attribute_reference_handling.cpp
+                  backtrace.cpp
+                  code_generation.cpp              
+                  column_grouping_keys.cpp
+                  denormalized_star_schema_benchmark.cpp
+                  dictionary_compression.cpp
+                  exit.cpp
+                  filesystem.cpp
+                  getname.cpp
+                  hardware_detector.cpp
+                  init.cpp
+                  opencl_runtime.cpp
+                  profiling.cpp
+                  query_compilation.cpp
+                  result_output_format.cpp
+                  shared_library.cpp
+                  star_schema_benchmark.cpp
+                  statistics.cpp
+                  tests.cpp
+                  time_measurement.cpp
+                  tpch_benchmark.cpp
+                  types.cpp
+                  query_processing.cpp
+                  variant_configurator.cpp
+                  variant_measurement.cpp
+                  genetic_exploration.cpp
+                  compilation_tpch_experiments.cpp)

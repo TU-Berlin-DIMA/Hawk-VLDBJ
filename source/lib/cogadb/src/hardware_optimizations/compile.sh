@@ -1,0 +1,1 @@
+g++ -g -O6 -march=native -mtune=native -msse -msse2 -msse3 -msse4 -mfpmath=sse -falign-functions=4 -falign-loops=4 -falign-jumps=4 -ftree-vectorize -fexpensive-optimizations -frerun-cse-after-loop -funroll-loops -frerun-loop-opt  -ftree-vectorizer-verbose=9 -fno-inline -I../../include loop_unrolling.cpp -lboost_chrono -lboost_system -lboost_thread -pthread -o test

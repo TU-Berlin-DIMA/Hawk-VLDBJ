@@ -1,0 +1,53 @@
+enable_testing(true)
+add_subdirectory("parser")
+
+file(COPY testdata/regression\ test DESTINATION testdata)
+file(COPY testdata/unittests DESTINATION testdata)
+file(COPY testdata/compression_tests DESTINATION testdata)
+file(COPY testdata/example_json_plans DESTINATION testdata)
+file(COPY testdata/json_schema_tests DESTINATION testdata)
+
+add_executable(bulk_execution_tpch-tests "integration_tests/generic_tpch_tests.cpp")
+target_link_libraries(bulk_execution_tpch-tests libgtest libgtest_main cogadb)
+add_test(bulk_execution_tpch-tests bulk_execution_tpch-tests)
+
+add_executable(bulk_execution_ssb-tests "integration_tests/generic_ssb_tests.cpp")
+target_link_libraries(bulk_execution_ssb-tests libgtest libgtest_main cogadb)
+add_test(bulk_execution_ssb-tests bulk_execution_ssb-tests)
+
+add_executable(standard_query_tests "integration_tests/standard_query_tests.cpp")
+target_link_libraries(standard_query_tests libgtest libgtest_main cogadb)
+add_test(standard_query-tests standard_query_tests)
+
+add_executable(query_compiler_ssb-tests "integration_tests/query_compiler_ssb_tests.cpp")
+target_link_libraries(query_compiler_ssb-tests libgtest libgtest_main cogadb)
+add_test(query_compiler_ssb-tests query_compiler_ssb-tests)
+
+add_executable(json_query_compiler_interface-tests "integration_tests/json_query_compiler_interface.cpp")
+target_link_libraries(json_query_compiler_interface-tests libgtest libgtest_main cogadb)
+add_test(json_query_compiler_interface-tests json_query_compiler_interface-tests)
+
+add_executable(code_generation_k_means "integration_tests/code_generation_k_means.cpp")
+target_link_libraries(code_generation_k_means libgtest libgtest_main cogadb ${CMAKE_DL_LIBS})
+add_test(k_means_test code_generation_k_means)
+
+add_executable(opencl_query_compiler_ssb_aggregation-tests "integration_tests/opencl_query_compiler_ssb_tests_aggregation.cpp")
+target_link_libraries(opencl_query_compiler_ssb_aggregation-tests libgtest libgtest_main cogadb)
+add_test(opencl_query_compiler_ssb_aggregation-tests opencl_query_compiler_ssb_aggregation-tests)
+
+add_executable(opencl_query_compiler_ssb_projection-tests "integration_tests/opencl_query_compiler_ssb_tests_projection.cpp")
+target_link_libraries(opencl_query_compiler_ssb_projection-tests libgtest libgtest_main cogadb)
+add_test(opencl_query_compiler_ssb_projection-tests opencl_query_compiler_ssb_projection-tests)
+
+add_executable(opencl_query_compiler_ssb_groupagg-tests "integration_tests/opencl_query_compiler_ssb_tests_groupagg.cpp")
+target_link_libraries(opencl_query_compiler_ssb_groupagg-tests libgtest libgtest_main cogadb)
+add_test(opencl_query_compiler_ssb_groupagg-tests opencl_query_compiler_ssb_groupagg-tests)
+
+add_executable(load_query_from_json "experiments/load_query_from_json.cpp")
+target_link_libraries(load_query_from_json libgtest libgtest_main cogadb ${CMAKE_DL_LIBS})
+
+add_executable(vector_at_a_time_test "experiments/vector_at_a_time_test.cpp")
+target_link_libraries(vector_at_a_time_test libgtest libgtest_main cogadb ${CMAKE_DL_LIBS})
+
+add_executable(opencl_kernel_launch "experiments/opencl_kernel_launch.cpp")
+target_link_libraries(opencl_kernel_launch libgtest libgtest_main cogadb ${CMAKE_DL_LIBS})

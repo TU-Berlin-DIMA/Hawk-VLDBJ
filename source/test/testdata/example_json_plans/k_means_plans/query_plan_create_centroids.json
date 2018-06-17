@@ -1,0 +1,29 @@
+{  
+  "QUERY_PLAN":{  
+    "OPERATOR_NAME":"STORE_TABLE",
+    "TABLE_NAME":"CENTROIDS",
+    "PERSIST_TABLE_ON_DISK":false,
+    "LEFT_CHILD":{  
+      "OPERATOR_NAME":"CREATE_TABLE",
+      "TABLE_NAME":"CENTROIDS",
+      "TABLE_SCHEMA":[  
+        {  
+          "ATTRIBUTE_TYPE":"INT",
+          "ATTRIBUTE_NAME":"CID"
+        },
+        {  
+          "ATTRIBUTE_TYPE":"DOUBLE",
+          "ATTRIBUTE_NAME":"C_VALUE_0"
+        },
+        {  
+          "ATTRIBUTE_TYPE":"DOUBLE",
+          "ATTRIBUTE_NAME":"C_VALUE_1"
+        }
+      ],
+      "PATH_TO_DATA_FILE":"/home/sebastian/benchmarks/k_means/mouse_random_centroids.csv",
+      "FIELD_SEPARATOR":"|"
+    },
+    "RIGHT_CHILD":null
+  },
+  "RIGHT_CHILD":null
+}

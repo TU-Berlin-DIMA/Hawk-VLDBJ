@@ -1,0 +1,1 @@
+create table ssb_project_t (LO_QUANTITY INT, LO_DISCOUNT FLOAT, LO_REVENUE FLOAT);

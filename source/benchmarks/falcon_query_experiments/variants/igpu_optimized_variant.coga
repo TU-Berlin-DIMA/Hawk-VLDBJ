@@ -1,0 +1,9 @@
+set code_gen.memory_access=coalesced
+set code_gen.opt.enable_predication=true
+set code_gen.opt.ocl_grouped_aggregation.atomic.workgroup.local_size=64
+set code_gen.opt.ocl_grouped_aggregation.global_size_multiplier=256
+set code_gen.opt.ocl_grouped_aggregation.hash_function=murmur3
+set code_gen.opt.ocl_grouped_aggregation_hashtable=linear_probing
+set code_gen.opt.ocl_grouped_aggregation_strategy=atomic
+set code_gen.pipe_exec_strategy=parallel_three_pass
+set code_gen.projection.global_size_multiplier=65536

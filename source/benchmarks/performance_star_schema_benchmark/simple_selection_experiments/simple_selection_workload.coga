@@ -1,0 +1,129 @@
+
+#set path_to_database=/home/sebastian/cogadb_databases/ssb_sf10
+#placecolumns
+
+#LO_ORDERPRIORITY,LO_SHIPPRIORITY,LO_QUANTITY,LO_EXTENDEDPRICE,LO_ORDTOTALPRICE,LO_DISCOUNT,LO_REVENUE,LO_SUPPLYCOST,LO_TAX
+
+#select lo_quantity from lineorder where lo_quantity < 1;
+#select lo_discount from lineorder where lo_discount > 10;
+#select LO_SHIPPRIORITY from lineorder where LO_SHIPPRIORITY>0;
+#select LO_EXTENDEDPRICE from lineorder where LO_EXTENDEDPRICE<100;
+#select LO_ORDTOTALPRICE from lineorder where LO_ORDTOTALPRICE<100;
+#select LO_REVENUE from lineorder where LO_REVENUE < 1000;
+#select LO_SUPPLYCOST from lineorder where LO_SUPPLYCOST < 1000;
+#select LO_TAX from lineorder where LO_TAX > 10;
+
+
+
+set print_query_result=false
+setdevice gpu
+starttimer
+parallelExec 1
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+select lo_quantity from lineorder where lo_quantity < 1;
+select lo_discount from lineorder where lo_discount > 10;
+serial_execution
+stoptimer
+printstatistics
+dumpestimationerrors average_estimation_errors.csv
+hypestatus
+
+
+

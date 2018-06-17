@@ -1,0 +1,9 @@
+#sets the optimization criterion used
+#possible values are:
+#ResponseTime: 0
+#WaitingTimeAwareResponseTime: 1 (default)
+#Throughput: 2
+#Simple_Round_Robin: 3
+#ProbabilityBasedOutsourcing: 4
+#Throughput2: 5
+default_optimization_criterion=1

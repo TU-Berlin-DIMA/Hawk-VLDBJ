@@ -1,0 +1,3 @@
+set code_gen.cl_device_type=dgpu
+set code_gen.num_threads=2
+set code_gen.enable_caching=true

@@ -1,0 +1,7 @@
+set default_code_generator=multi_staged
+#set code_gen.c_compiler_clang_jit=true
+set default_hash_table=linear_probing
+set enable_parallel_pipelines=true
+set code_gen.num_threads=4
+set code_gen.opt.profiling_timer_prefix=C_CODE_GENERATION_OPTIMIZED
+#set debug_code_generator=true

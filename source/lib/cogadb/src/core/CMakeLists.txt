@@ -1,0 +1,23 @@
+add_source_cogadb(attribute_reference.cpp
+                  base_column.cpp
+                  base_table.cpp
+                  block_iterator.cpp
+                  bitmap.cpp
+                  column_based_typed.cpp
+                  column.cpp
+                  copy_function_factory.cpp
+                  cstring_column.cpp
+                  data_dictionary.cpp
+                  foreign_key_constraint.cpp
+                  lookup_array.cpp
+                  memory_allocator.cpp
+                  operator_parameter_types.cpp
+                  positionlist.cpp
+                  processor_data_cache.cpp
+                  runtime_configuration.cpp
+                  selection_expression.cpp
+                  table.cpp
+                  user_defined_function.cpp
+                  variable_manager.cpp
+                  vector_typed.cpp
+                  vector.cpp)

@@ -1,0 +1,355 @@
+/*
+ * Copyright (c) 2013, Robin Haberkorn, Otto-von-Guericke University of Magdeburg, Germany. All rights reserved.
+ * Derived from Example 5-3, lex & yacc by John R. Levine, Tony Mason and Doug Brown.
+ *		Copyright 1990, 1992 O'Reilly & Associates, Inc.
+ *
+ * This program and accompanying materials are made available under the terms of the 
+ * GNU GENERAL PUBLIC LICENSE - Version 3, http://www.gnu.org/licenses/gpl-3.0.txt
+ */
+
+%{
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-value"
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#include <iostream>
+#include <string>
+#include <stdlib.h>
+
+#include <boost/algorithm/string.hpp>
+
+/*
+ * generated from sql_parser.ypp,
+ * contains tokens definitions
+ */
+#include "sql_parser.hpp"
+#include "sql/server/sql_driver.hpp"
+#include "sql/server/sql_parsetree.hpp"
+
+using namespace CoGaDB::SQL;
+
+#define TOK(NAME) do {		\
+	return Parser::token::NAME;	\
+} while (0)
+
+/*
+ * By default yylex returns int, we use token_type.
+ * Unfortunately yyterminate by default returns 0, which is
+ * not of token_type.
+ */
+#define yyterminate() TOK(END)
+
+#define driver (*yyextra)
+
+typedef Parser::semantic_type YYSTYPE;
+/*
+ * put lex() definition into CoGaDB::SQL::Scanner namespace,
+ * all other declarations/definitions must be prefixed
+ */
+#define YY_DECL \
+	CoGaDB::SQL::Parser::token_type \
+	CoGaDB::SQL::Scanner::lex(YYSTYPE *yylval_param, yyscan_t yyscanner)
+
+/*
+ * Let YY_INPUT() use C++ istreams
+ */
+/*! \todo YY_INPUT can be improved significantly */
+#define YY_INPUT(buf, result, max_size) do {	\
+	char c;				\
+	*driver.istream >> c;			\
+	if (driver.istream->eof()) {		\
+		result = YY_NULL;		\
+	} else {				\
+		buf[0] = c;			\
+		result = 1;			\
+	}					\
+} while (0)
+%}
+
+/*
+ * Options
+ */
+%option bison-bridge reentrant
+
+/* we cannot put all functions into a namespace, so we prefix them */
+%option prefix="cogadb_sql_scanner_" extra-type="CoGaDB::SQL::Driver *"
+
+%option noyywrap
+%option yylineno
+
+%option case-insensitive
+
+/*
+ * Rules
+ */
+%%
+
+	/* literal keyword tokens */
+
+ADA		{ TOK(ADA); }
+ALL		{ TOK(ALL); }
+AND		{ TOK(AND); }
+AVG		{
+	yylval->aggregation_function = CoGaDB::AVERAGE;
+	TOK(AMMSC);
+}
+MIN		{
+	yylval->aggregation_function = CoGaDB::MIN;
+	TOK(AMMSC);
+}
+MAX		{
+	yylval->aggregation_function = CoGaDB::MAX;
+	TOK(AMMSC);
+}
+SUM		{
+	yylval->aggregation_function = CoGaDB::SUM;
+	TOK(AMMSC);
+}
+COUNT		{
+	yylval->aggregation_function = CoGaDB::COUNT;
+	TOK(AMMSC);
+}
+GENOTYPE	{
+	yylval->aggregation_function = CoGaDB::AGG_GENOTYPE;
+	TOK(AMMSC);
+}	
+CONCAT_BASES	{
+	yylval->aggregation_function = CoGaDB::AGG_CONCAT_BASES;
+	TOK(AMMSC);
+}	
+IS_HOMOPOLYMER	{
+	yylval->aggregation_function = CoGaDB::AGG_IS_HOMOPOLYMER;
+	TOK(AMMSC);
+}
+GENOTYPE_STATISTICS	{
+	yylval->aggregation_function = CoGaDB::AGG_GENOTYPE_STATISTICS;
+	TOK(AMMSC);
+}	
+ANY		{ TOK(ANY); }
+AS		{ TOK(AS); }
+ASC(ENDING)?	{ TOK(ASC); }
+AUTHORIZATION	{ TOK(AUTHORIZATION); }
+BETWEEN		{ TOK(BETWEEN); }
+BIGINT		{ TOK(BIGINT); } 
+BY		{ TOK(BY); }
+C		{ TOK(C); }
+CHAR(ACTER)?	{ TOK(CHARACTER); }
+CHECK		{ TOK(CHECK); }
+CLOSE		{ TOK(CLOSE); }
+COBOL		{ TOK(COBOL); }
+COMMIT		{ TOK(COMMIT); }
+CONTINUE	{ TOK(CONTINUE); }
+CREATE		{ TOK(CREATE); }
+CROSS		{ TOK(CROSS); }
+CURRENT		{ TOK(CURRENT); }
+CURSOR		{ TOK(CURSOR); }
+DATE            { TOK(DATE); }
+DECIMAL		{ TOK(DECIMAL); }
+DECLARE		{ TOK(DECLARE); }
+DEFAULT		{ TOK(DEFAULT); }
+DELETE		{ TOK(DELETE); }
+DESC(ENDING)?	{ TOK(DESC); }
+DISTINCT	{ TOK(DISTINCT); }
+DOUBLE		{ TOK(DOUBLE); }
+ESCAPE		{ TOK(ESCAPE); }
+EXISTS		{ TOK(EXISTS); }
+FETCH		{ TOK(FETCH); }
+FLOAT		{ TOK(FLOAT); }
+FOR		{ TOK(FOR); }
+FOREIGN		{ TOK(FOREIGN); }
+FORTRAN		{ TOK(FORTRAN); }
+FOUND		{ TOK(FOUND); }
+FROM		{ TOK(FROM); }
+GO[ \t]*TO	{ TOK(GOTO); }
+GRANT		{ TOK(GRANT); }
+GROUP		{ TOK(GROUP); }
+HAVING		{ TOK(HAVING); }
+IN		{ TOK(IN); }
+INDICATOR	{ TOK(INDICATOR); }
+INNER		{ TOK(INNER); }
+INSERT		{ TOK(INSERT); }
+INT(EGER)?	{ TOK(INTEGER); }
+INTO		{ TOK(INTO); }
+IS		{ TOK(IS); }
+JOIN		{ TOK(JOIN); }
+KEY		{ TOK(KEY); }
+LANGUAGE	{ TOK(LANGUAGE); }
+LIKE		{ TOK(LIKE); }
+LIMIT		{ TOK(LIMIT); }
+MODULE		{ TOK(MODULE); }
+NOT		{ TOK(NOT); }
+NULL		{ TOK(NULLX); }
+NUMERIC		{ TOK(NUMERIC); }
+OF		{ TOK(OF); }
+ON		{ TOK(ON); }
+OPEN		{ TOK(OPEN); }
+OPTION		{ TOK(OPTION); }
+OR		{ TOK(OR); }
+ORDER		{ TOK(ORDER); }
+PASCAL		{ TOK(PASCAL); }
+PLI		{ TOK(PLI); }
+PRECISION	{ TOK(PRECISION); }
+PRIMARY		{ TOK(PRIMARY); }
+PRIVILEGES	{ TOK(PRIVILEGES); }
+PROCEDURE	{ TOK(PROCEDURE); }
+PUBLIC		{ TOK(PUBLIC); }
+REAL		{ TOK(REAL); }
+REFERENCES	{ TOK(REFERENCES); }
+ROLLBACK	{ TOK(ROLLBACK); }
+SCHEMA		{ TOK(SCHEMA); }
+SELECT		{ TOK(SELECT); }
+SET		{ TOK(SET); }
+SMALLINT	{ TOK(SMALLINT); }
+SOME		{ TOK(SOME); }
+SQLCODE		{ TOK(SQLCODE); }
+TABLE		{ TOK(TABLE); }
+TO		{ TOK(TO); }
+UNION		{ TOK(UNION); }
+UNIQUE		{ TOK(UNIQUE); }
+UNSIGNED	{ TOK(UNSIGNED); }
+UPDATE		{ TOK(UPDATE); }
+USER		{ TOK(USER); }
+VALUES		{ TOK(VALUES); }
+CHAR(ACTER)?[ \t]+VARYING |
+VARCHAR	{ TOK(VARCHAR); }
+VIEW		{ TOK(VIEW); }
+WHENEVER	{ TOK(WHENEVER); }
+WHERE		{ TOK(WHERE); }
+WITH		{ TOK(WITH); }
+WORK		{ TOK(WORK); }
+
+	/* punctuation */
+
+"="		{
+	yylval->comparator = ParseTree::EQUAL;
+	TOK(COMPARISON);
+}
+"<>" 		{
+	yylval->comparator = ParseTree::UNEQUAL;
+	TOK(COMPARISON);
+}
+"<"		{
+	yylval->comparator = ParseTree::LESSER;
+	TOK(COMPARISON);
+}
+">"		{
+	yylval->comparator = ParseTree::GREATER;
+	TOK(COMPARISON);
+}
+"<="		{
+	yylval->comparator = ParseTree::LESSER_EQUAL;
+	TOK(COMPARISON);
+}
+">="		{
+	yylval->comparator = ParseTree::GREATER_EQUAL;
+	TOK(COMPARISON);
+}
+
+[-+*/:(),.;]	return (Parser::token_type)yytext[0];
+
+	/* names */
+
+[A-Z][A-Z0-9_]* {
+	yylval->string = new ParseTree::String(yytext);
+	boost::algorithm::to_upper(*yylval->string);
+	TOK(NAME);
+}
+
+\"[^\"\n]*\" {
+	yylval->string = new ParseTree::String(yytext + 1, yyleng - 2);
+	TOK(NAME);
+}
+
+\"[^\"\n]*$	driver.error("Unterminated name");
+
+	/* numbers */
+
+[0-9]+ {
+	yylval->integer = new ParseTree::Integer((int)strtol(yytext, NULL, 10));
+	TOK(INTNUM);
+}
+[0-9]+"."[0-9]* |
+"."[0-9]* {
+	yylval->integer = new ParseTree::Integer(strtod(yytext, NULL));
+	TOK(APPROXNUM);
+}
+
+[0-9]+E[+-]?[0-9]+ |
+[0-9]+"."[0-9]*E[+-]?[0-9]+ |
+"."[0-9]*E[+-]?[0-9]+ {
+	yylval->integer = new ParseTree::Integer(strtod(yytext, NULL));
+	TOK(APPROXNUM);
+}
+
+	/* strings */
+
+'[^'\n]*' {
+	int c = yyinput(yyscanner);
+
+	if (c != '\'') {
+		yylval->string = new ParseTree::String(yytext + 1, yyleng - 2);
+		boost::algorithm::replace_all(*yylval->string, "''", "'");
+
+		unput(c);	/* just peeking */
+		TOK(STRING);
+	} else {
+		unput(c);	/* just peeking */
+		yymore();
+	}
+}
+		
+'[^'\n]*$	driver.error("Unterminated string");
+
+[ \n\t\r]+	;	/* white space */
+
+"--".*$		;	/* comment */
+
+%%
+/*
+ * Epilogue
+ */
+
+namespace CoGaDB {
+
+void
+SQL::Driver::init_scan()
+{
+	cogadb_sql_scanner_lex_init_extra(this, (yyscan_t *)&scanner);
+}
+
+void
+SQL::Driver::set_input(std::istream &is)
+{
+	if (buffer)
+		cogadb_sql_scanner__delete_buffer((YY_BUFFER_STATE)buffer, (yyscan_t)scanner);
+	buffer = cogadb_sql_scanner__create_buffer(NULL, YY_BUF_SIZE, (yyscan_t)scanner);
+	cogadb_sql_scanner__switch_to_buffer((YY_BUFFER_STATE)buffer, (yyscan_t)scanner);
+
+	istream = &is;
+}
+
+void
+SQL::Driver::set_input(const std::string &src)
+{
+	if (buffer)
+		cogadb_sql_scanner__delete_buffer((YY_BUFFER_STATE)buffer, (yyscan_t)scanner);
+	buffer = cogadb_sql_scanner__scan_string(src.c_str(), (yyscan_t)scanner);
+}
+
+void
+SQL::Driver::destroy_scan()
+{
+	if (buffer)
+		cogadb_sql_scanner__delete_buffer((YY_BUFFER_STATE)buffer, (yyscan_t)scanner);
+	cogadb_sql_scanner_lex_destroy((yyscan_t)scanner);
+}
+
+void
+SQL::Driver::error(const std::string &m)
+{
+	yyscan_t s = (yyscan_t)scanner;
+
+	std::cerr << cogadb_sql_scanner_get_lineno(s) << ": " << m << std::endl;
+}
+
+} /* namespace CoGaDB */
+#pragma GCC diagnostic pop

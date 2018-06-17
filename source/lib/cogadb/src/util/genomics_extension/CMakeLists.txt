@@ -1,0 +1,11 @@
+add_source_cogadb(alignment_files.cpp
+                  genome_data_importer.cpp
+                  base_centric_simple_key_importer.cpp
+                  storage_experiments_importer.cpp
+                  sequence_centric_simple_key_importer.cpp
+                  sequence_centric_simple_key_importer_stashing_unmapped_reads.cpp
+                  exporter.cpp
+                  CigarFSM.cpp
+                  samQueryCreator.cpp
+                  samExportCommandParser.cpp
+                  samVerification.cpp)

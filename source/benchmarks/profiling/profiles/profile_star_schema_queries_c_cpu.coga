@@ -1,0 +1,32 @@
+
+execute_cogascript util/setup_query_compiler.coga
+execute_cogascript processor_optimized_variants/c_code_generator_optimized.coga
+execute_cogascript queries/ssb/ssb_all.coga
+
+set code_gen.opt.profiling_timer_prefix=C_CODE_GENERATION_CPU_OPTIMIZED_SSB11
+execute_cogascript queries/ssb/ssb11.coga
+set code_gen.opt.profiling_timer_prefix=C_CODE_GENERATION_CPU_OPTIMIZED_SSB12
+execute_cogascript queries/ssb/ssb12.coga
+set code_gen.opt.profiling_timer_prefix=C_CODE_GENERATION_CPU_OPTIMIZED_SSB13
+execute_cogascript queries/ssb/ssb13.coga
+set code_gen.opt.profiling_timer_prefix=C_CODE_GENERATION_CPU_OPTIMIZED_SSB21
+execute_cogascript queries/ssb/ssb21.coga
+set code_gen.opt.profiling_timer_prefix=C_CODE_GENERATION_CPU_OPTIMIZED_SSB22
+execute_cogascript queries/ssb/ssb22.coga
+set code_gen.opt.profiling_timer_prefix=C_CODE_GENERATION_CPU_OPTIMIZED_SSB23
+execute_cogascript queries/ssb/ssb23.coga
+set code_gen.opt.profiling_timer_prefix=C_CODE_GENERATION_CPU_OPTIMIZED_SSB31
+execute_cogascript queries/ssb/ssb31.coga
+set code_gen.opt.profiling_timer_prefix=C_CODE_GENERATION_CPU_OPTIMIZED_SSB32
+execute_cogascript queries/ssb/ssb32.coga
+set code_gen.opt.profiling_timer_prefix=C_CODE_GENERATION_CPU_OPTIMIZED_SSB33
+execute_cogascript queries/ssb/ssb33.coga
+set code_gen.opt.profiling_timer_prefix=C_CODE_GENERATION_CPU_OPTIMIZED_SSB34
+execute_cogascript queries/ssb/ssb34.coga
+set code_gen.opt.profiling_timer_prefix=C_CODE_GENERATION_CPU_OPTIMIZED_SSB41
+execute_cogascript queries/ssb/ssb41.coga
+set code_gen.opt.profiling_timer_prefix=C_CODE_GENERATION_CPU_OPTIMIZED_SSB42
+execute_cogascript queries/ssb/ssb42.coga
+set code_gen.opt.profiling_timer_prefix=C_CODE_GENERATION_CPU_OPTIMIZED_SSB43
+execute_cogascript queries/ssb/ssb43.coga
+

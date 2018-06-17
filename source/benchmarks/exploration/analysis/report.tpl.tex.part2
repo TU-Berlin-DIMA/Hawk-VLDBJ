@@ -1,0 +1,27 @@
+\end{filecontents*}
+
+\pgfplotstableread[
+    col sep = semicolon,
+    string replace*={_}{\textsubscript},
+    display columns/0/.style={string type},
+    display columns/1/.style={string type},
+    display columns/2/.style={string type},
+    display columns/3/.style={string type}
+]{data.csv}\datatable
+
+\pgfplotstablegetrowsof\datatable
+\pgfmathsetmacro\numberofrows{\pgfplotsretval-1}
+
+\makeatletter
+% Style to select only points from #1 to #2 (inclusive)
+\pgfplotsset{select coords between index/.style 2 args={
+    x filter/.code={
+        \ifnum\coordindex<#1\def\pgfmathresult{}\fi
+        \ifnum\coordindex>#2\def\pgfmathresult{}\fi
+    }
+}}
+\makeatother
+
+\begin{document}
+
+\title{

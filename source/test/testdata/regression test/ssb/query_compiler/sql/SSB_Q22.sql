@@ -1,0 +1,1 @@
+select sum(lo_revenue), d_year, p_brand from dates JOIN (part JOIN (supplier JOIN lineorder ON (s_suppkey = lo_suppkey)) ON (p_partkey=lo_partkey)) ON (d_datekey=lo_orderdate) where p_brand between 'MFGR#2221' and 'MFGR#2228' and s_region = 'ASIA' group by d_year, p_brand order by d_year, p_brand;

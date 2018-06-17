@@ -1,0 +1,9 @@
+{
+    "QUERY_PLAN":{
+        "OPERATOR_NAME":"STORE_TABLE",
+        "TABLE_NAME": "MY_SORTED_PART_TABLE",
+        "PERSIST_TABLE_ON_DISK": false,
+        "LEFT_CHILD":{},
+        "RIGHT_CHILD":null
+    }
+}

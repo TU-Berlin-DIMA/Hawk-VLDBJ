@@ -1,0 +1,3 @@
+set code_gen.cl_device_type=cpu
+set code_gen.num_threads=4
+set code_gen.cl_command_queue_strategy=subdevices

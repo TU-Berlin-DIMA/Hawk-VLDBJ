@@ -1,0 +1,8 @@
+set bench.exploration.querytype=grouped_aggregation_with_join
+set code_gen.opt.ocl_grouped_aggregation.hack.enable_manual_ht_size=true
+set code_gen.opt.ocl_grouped_aggregation.hack.ht_size=20
+set code_gen.opt.hack.ignore_bitpacking_max_bits=true
+execute_query_from_json tpch_queries/tpch_query7.json
+
+set code_gen.opt.ocl_grouped_aggregation.hack.enable_manual_ht_size=false
+set code_gen.opt.hack.ignore_bitpacking_max_bits=false

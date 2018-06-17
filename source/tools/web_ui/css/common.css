@@ -1,0 +1,15 @@
+body {
+	font: normal .8em/1.5em Arial, Helvetica, sans-serif;
+	background-image: url(/images/light_grey.png);
+	color: #666;
+}
+
+h1 {
+	text-align: center
+}
+
+a {
+	color: #333;
+}
+
+.hidden {display:none;}

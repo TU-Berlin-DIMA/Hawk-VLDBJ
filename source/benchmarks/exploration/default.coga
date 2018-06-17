@@ -1,0 +1,8 @@
+loaddatabase
+set print_query_plan=false
+set optimizer=no_join_order_optimizer
+set query_execution_policy=compiled
+set default_code_generator=multi_staged
+set print_query_result=false
+set code_gen.exec_strategy=opencl
+set default_hash_table=ocl_linear_probing

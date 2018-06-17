@@ -1,0 +1,19 @@
+{
+    "QUERY_PLAN":{
+        "OPERATOR_NAME":"PROJECTION",
+        "ATTRIBUTES":[
+            {
+                "ATTRIBUTE_REFERENCE":{
+                    "COLUMN_NAME":"LO_QUANTITY",
+                    "TABLE_NAME":"LINEORDER",
+                    "VERSION":1
+                }
+            }
+        ],
+        "LEFT_CHILD":{
+            "OPERATOR_NAME":"TABLE_SCAN",
+            "TABLE_NAME":"LINEORDER"
+        },
+        "RIGHT_CHILD": null
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "QUERY_PLAN":{
+        "OPERATOR_NAME":"EXPORT_INTO_FILE",
+	      "PATH_TO_DATA_FILE": "my_sorted_part.tbl",
+	      "FIELD_SEPARATOR": "|",
+        "LEFT_CHILD": {},
+        "RIGHT_CHILD": null
+    }
+}

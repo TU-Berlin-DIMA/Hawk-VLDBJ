@@ -1,0 +1,8 @@
+#
+set path_to_database=/media/1A2AA9012AA8DAD1_/CoGaDB_databases/ssb_sf1/
+loaddatabase
+setdevice cpu
+#simple_ssb_queries
+ssb11
+#back
+quit

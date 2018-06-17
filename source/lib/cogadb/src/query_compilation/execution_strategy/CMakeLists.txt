@@ -1,0 +1,17 @@
+add_source_cogadb(pipeline.cpp
+                  ocl.cpp
+                  ocl_aggregation.cpp
+                  ocl_grouped_aggregation.cpp
+                  ocl_grouped_aggregation_atomic.cpp
+                  ocl_grouped_aggregation_atomic_workgroup_ht.cpp
+                  ocl_projection.cpp
+                  ocl_projection_serial_single_pass.cpp
+                  ocl_projection_parallel_global_atomic_single_pass.cpp
+                  ocl_projection_three_phase.cpp
+                  ocl_projection_single_pass_scan.cpp
+                  ocl_aggregation_single_pass.cpp
+                  ocl_grouped_aggregation_reduce_atomics.cpp
+                  ocl_grouped_aggregation_multipass.cpp
+                  ocl_aggregation_multipass.cpp
+                  ocl_grouped_aggregation_fused_scan_global_group.cpp
+                  multipass_grouping.cpp)

@@ -1,0 +1,1 @@
+select sum(lo_quantity) from lineorder where lo_quantity < 25;

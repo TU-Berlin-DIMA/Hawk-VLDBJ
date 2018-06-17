@@ -1,0 +1,2 @@
+set code_gen.exec_strategy=c
+set default_hash_table=linear_probing

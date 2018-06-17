@@ -1,0 +1,52 @@
+# general settings
+#set print_query_plan=true
+set genome_schema_type=simple key
+set genome_schema_compression=false
+#set genotype_frequency_min=0.2
+#set genotype_frequency_max=0.8
+set path_to_database=/home/basti/Workspaces/coga_databases/uncompressed_sam
+set table_loader_mode=main_memory
+
+# get data from disk
+#loaddatabase
+# or import
+create_genome_database_schema
+import_reference_genome /home/basti/Workspaces/genome_data/WGS_assembly_barley_cultivar_Morex_contig1-30.fasta WGS_assembly_barley_cultivar_Morex
+import_sample_genome /home/basti/Workspaces/genome_data/Harrington_contig1-30.sam WGS_assembly_barley_cultivar_Morex
+
+# statistics
+printdatabasesize
+integrityconstraints
+printschema
+
+#select genotype(sb_base_value) from sample_base join reference_base on sb_rb_id = rb_id where rb_c_id = 3 and rb_position between 230 and 260 and sb_insert_offset = 0 group by rb_position;
+select sb_id, sb_rb_id, sb_read_id, sb_base_value, sb_insert_offset, sb_base_call_quality, rb_id, rb_base_value, rb_position, rb_c_id from sample_base join reference_base on sb_rb_id = rb_id where rb_c_id = 3 and rb_position between 500 and 510;
+
+# show the reference sequence in a specific region, e.g. a gene
+#select concat_bases(rb_base_value), min(rb_position), max(rb_position) from reference_base where rb_c_id = 5 and rb_position between 20 and 50;
+
+# show aligned reads in specific region, e.g. a gene
+#select sb_read_id, concat_bases(sb_base_value) as read, min(rb_position) as start, max(rb_position) as end from sample_base join reference_base on sb_rb_id = rb_id where rb_c_id = 5 and rb_position between 20 and 50 group by sb_read_id;
+
+# show the coverage in a specific region, e.g. a gene
+#select rb_position, count(sb_insert_offset) as coverage from sample_base join reference_base on sb_rb_id = rb_id where sb_insert_offset = 0 and rb_c_id = 5 and rb_position between 20 and 50 group by rb_position order by rb_position;
+
+# get positions with high coverage
+#select rb_position, count(sb_insert_offset) as coverage from sample_base join reference_base on sb_rb_id = rb_id where sb_insert_offset = 0 group by rb_position having count(sb_insert_offset) > 50 order by rb_position;
+
+# get variant positions with high coverage
+#select rb_c_id, rb_position, rb_base_value, genotype(sb_base_value) as my_genotype, count(sb_insert_offset) as coverage from sample_base join reference_base on sb_rb_id = rb_id where sb_insert_offset = 0 group by rb_c_id, rb_position, rb_base_value having rb_base_value <> my_genotype and coverage >= 50 order by rb_c_id, rb_position;
+
+# get homozygote variants
+#set genotype_frequency_min=0.7
+#set genotype_frequency_max=1
+#select rb_c_id, rb_position, rb_base_value, genotype(sb_base_value) as my_genotype, count(sb_insert_offset) as coverage from sample_base join reference_base on sb_rb_id = rb_id where sb_insert_offset = 0 group by rb_c_id, rb_position, rb_base_value having rb_base_value <> my_genotype and coverage >= 50 order by rb_c_id, rb_position;
+
+# give some stats about the genotype
+#select rb_c_id, rb_position, rb_base_value, genotype(sb_base_value) as my_genotype, genotype_statistics(sb_base_value), count(sb_insert_offset) as coverage from sample_base join reference_base on sb_rb_id = rb_id where sb_insert_offset = 0 group by rb_c_id, rb_position, rb_base_value having rb_base_value <> my_genotype and my_genotype <> 'N' and coverage >= 50 order by rb_c_id, rb_position;
+
+# give positions with insertions per read
+#select rb_position, sb_read_id, count(sb_insert_offset) from sample_base join reference_base on sb_rb_id = rb_id where sb_insert_offset > 0 group by rb_position, sb_read_id order by rb_position, sb_read_id;
+
+# give positions with deletions per read
+#select rb_position, sb_read_id, count(sb_insert_offset) from sample_base join reference_base on sb_rb_id = rb_id where sb_insert_offset = 0 and sb_base_value = 'X' group by rb_position, sb_read_id order by rb_position, sb_read_id;
