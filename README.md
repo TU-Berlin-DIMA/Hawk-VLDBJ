@@ -1,4 +1,4 @@
-# Generating Custom Code for Efficient Query Execution on Heterogeneous Processors
+# Generating Custom Code for Efficient Query Execution on Heterogeneous Processors
 This repository contains our work on custom code generation for efficient query execution on heterogenous processors.
 It was first published in the [VLDB Journal](http://vldb.org/vldb_journal).
 
@@ -13,8 +13,9 @@ We show that our approach finds an efficient custom code variant for multi-core 
 
 <!--
 **Publications**
-- Paper: [Generating Custom Code for Efficient Query Execution on Heterogeneous Processors](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/blob/master/Paper-Generating-Custom-Code-for-Efficient-Query-Execution-on-Heterogeneous-Processors.pdf)
-- Poster: [Generating Custom Code for Efficient Query Execution on Heterogeneous Processors](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/blob/master/Poster-Generating-Custom-Code-for-Efficient-Query-Execution-on-Heterogeneous-Processors.pdf)
+- Paper: [Generating Custom Code for Efficient Query Execution on Heterogeneous 
+Processors](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/blob/master/Paper-Generating-Custom-Code-for-Efficient-Query-Execution-on-Heterogeneous-Processors.pdf)
+- Poster: [Generating Custom Code for Efficient Query Execution on Heterogeneous Processors](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/blob/master/Poster-Generating-Custom-Code-for-Efficient-Query-Execution-on-Heterogeneous-Processors.pdf)
 
 - BibTeX citation:
 ```
@@ -28,7 +29,8 @@ After cloning the repository you can find the source code in the directory `sour
 
 **System Requirements**
 We recommend Ubuntu (14.04.3 LTS or higher, 64 bit) as operating system with g++ (version 4.8 or higher) compiler.
-To install all required tools and libraries you can use the script `utility_scripts/install_cogadb_dependencies.sh`.
+To install all required tools and libraries you can use the script 
+[`utility_scripts/install_cogadb_dependencies.sh`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/blob/master/source/utility_scripts/install_cogadb_dependencies.sh).
 All dependencies are installed via [APT package manager](https://wiki.ubuntuusers.de/APT/).
 The prequisites in detail are:
 
@@ -62,14 +64,18 @@ user@host:~/Hawk-VLDBJ/source/release_build$ cmake -DCMAKE_BUILD_TYPE=Release ..
 **Setup Reference Databases**
 To execute the experiments we need data.
 We use the TPC-H and SSB reference databases as workload data.
-You can use the script `utility_scripts/setup_reference_databases.sh` to download and setup the reference databases for the experiments.
+You can use the script 
+[`utility_scripts/setup_reference_databases.sh`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/blob/master/source/utility_scripts/setup_reference_databases.sh) 
+to download and setup the reference databases for the experiments.
 You will be ask where you want to store them. 
 
 
 ## How to run the experiments
 All scripts for the experiments will ask for the pathes to the CoGaDB executable, to the TPC-H database and to the SSB database.
-Files related to the exploration experiments are located in the folder `Hawk-VLDBJ/benchmarks/exploration`.
-Alls files for the Falcon Query Experiment can be found in the folder `Hawk-VLDBJ/benchmarks/falcon_query_experiments`.
+Files related to the exploration experiments are located in the folder 
+[`Hawk-VLDBJ/benchmarks/exploration`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/tree/master/source/benchmarks/exploration).
+Alls files for the Falcon Query Experiment can be found in the folder 
+[`Hawk-VLDBJ/benchmarks/falcon_query_experiments`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/tree/master/source/benchmarks/falcon_query_experiments).
 
 ### Exploration Experiments
 
@@ -79,20 +85,31 @@ Alls files for the Falcon Query Experiment can be found in the folder `Hawk-VLDB
 In multiple iterations we execute all possible values per dimension.
 At the end we have found the variant that performs best over all executed queries.
 We explain the algorithm in detail in the paper.
-The queries are configured by a `*.coga` file in the subfolders `ssb_queries` and `tpch_queries`.
-You can perform the experiment with the script `execute_feature_wise.sh`.
+The queries are configured by a `*.coga` file in the subfolders 
+[`ssb_queries`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/tree/master/source/benchmarks/exploration/ssb_queries) and 
+[`tpch_queries`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/tree/master/source/benchmarks/exploration/tpch_queries).
+You can perform the experiment with the script 
+[`execute_feature_wise.sh`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/blob/master/source/benchmarks/exploration/execute_feature_wise.sh).
 The best variant for each recognized device can be found in the subfolder `results`.
 
 #### Feature Wise per Query Exploration
 In this experiement we find the best performing variant per query.
 Apart from that we use the same algorithm as for the feature-wise experiment.
-You can perform the experiment with the script `execute_feature_wise_per_query.sh`.
+You can perform the experiment with the script 
+[`execute_feature_wise_per_query.sh`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/blob/master/source/benchmarks/exploration/execute_feature_wise_per_query.sh).
+We search the best performing variants for the queries configured in directories
+[`ssb_queries_feature_wise_per_query`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/tree/master/source/benchmarks/exploration/ssb_queries_feature_wise_per_query) and 
+[`tpch_queries_feature_wise_per_query`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/tree/master/source/benchmarks/exploration/tpch_queries_feature_wise_per_query).
 The best variant for each query and recognized device can be found in the subfolder `results`.
 
 ### Falcon Query Experiments
-All queries that are configured by a `*.coga` file in the subfolder `ssb_queries` and `tpch_queries` are executed.
-Therefore the variants in the subfolder `variants` are used.
-You can perform the experiment with the script `run_experiments.sh`.
+All queries that are configured by a `*.coga` file in the subfolder 
+[`ssb_queries`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/tree/master/source/benchmarks/falcon_query_experiments/ssb_queries) and 
+[`tpch_queries`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/tree/master/source/benchmarks/falcon_query_experiments/tpch_queries) are executed.
+Therefore the variants in the subfolder [`variants`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/tree/master/source/benchmarks/falcon_query_experiments/variants) are 
+used.
+You can perform the experiment with the script 
+[`run_experiments.sh`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/blob/master/source/benchmarks/falcon_query_experiments/run_experiments.sh).
 
 #### What is done by the script?
 - Available devices are detected.
@@ -100,4 +117,7 @@ You can perform the experiment with the script `run_experiments.sh`.
 
 #### Analysing the Results
 - Change to the subfolder with experimental results `falcon_paper_experimental_results-*`
-- Execute scripts to collect results: `../collect_results.sh` and `../collect_results_compilation_time.sh`
+- Execute scripts to collect results: 
+[`../collect_results.sh`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/blob/master/source/benchmarks/falcon_query_experiments/collect_results.sh) 
+and 
+[`../collect_results_compilation_time.sh`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/blob/master/source/benchmarks/falcon_query_experiments/collect_results_compilation_time.sh).
