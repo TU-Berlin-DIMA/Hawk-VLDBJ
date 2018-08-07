@@ -11,18 +11,22 @@ Our experimental results show that the performance of code variants may diverge 
 In order to achieve peak performance, we generate custom code for each processor.
 We show that our approach finds an efficient custom code variant for multi-core CPUs, GPUs, and MICs.
 
-<!--
-**Publications**
-- Paper: [Generating Custom Code for Efficient Query Execution on Heterogeneous 
-Processors](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/blob/master/Paper-Generating-Custom-Code-for-Efficient-Query-Execution-on-Heterogeneous-Processors.pdf)
-- Poster: [Generating Custom Code for Efficient Query Execution on Heterogeneous Processors](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/blob/master/Poster-Generating-Custom-Code-for-Efficient-Query-Execution-on-Heterogeneous-Processors.pdf)
+**Publication**
+Paper: [Generating Custom Code for Efficient Query Execution on Heterogeneous 
+Processors](https://doi.org/10.1007/s00778-018-0512-y)
 
-- BibTeX citation:
+BibTeX citation:
 ```
-TO BE DONE
+@Article{Breß2018,
+    title="Generating custom code for efficient query execution on heterogeneous processors",
+    author="Bre{\ss}, Sebastian and K{\"o}cher, Bastian and Funke, Henning and Zeuch, Steffen and Rabl, Tilmann and Markl, Volker",
+    journal="The VLDB Journal",
+    year="2018", month="Jul", day="09",
+    issn="0949-877X",
+    doi="10.1007/s00778-018-0512-y",
+    url="https://doi.org/10.1007/s00778-018-0512-y"
 }
 ```
--->
 
 ## How to build source code and setup reference databases
 After cloning the repository you can find the source code in the directory `source`.
