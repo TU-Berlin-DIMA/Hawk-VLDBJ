@@ -206,7 +206,7 @@ const TablePtr exploreVariants(const std::string& variant_exploration_mode,
       print(client, variant);
 
       std::vector<VariantMeasurement> measurements;
-      VariantExecutionStatistics statistics(measurements);
+      VariantExecutionStatistics statistics;
       double std_dev = 0;
       int counter = 0;
       do {

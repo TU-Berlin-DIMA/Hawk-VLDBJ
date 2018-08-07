@@ -15,4 +15,4 @@ One of your experiments successfully completed on machine '$HOSTNAME':
 $1
 
 Kind regards,
-Your experiment script system" | mail -s "Experiment Successfully Completed On Machine $HOSTNAME" tobias.behrens@dfki.de
+Your experiment script system" | mail -s "Experiment Successfully Completed On Machine $HOSTNAME" experimentalist@institute.org
