@@ -12,6 +12,7 @@ In order to achieve peak performance, we generate custom code for each processor
 We show that our approach finds an efficient custom code variant for multi-core CPUs, GPUs, and MICs.
 
 **Publication**
+
 Paper: [Generating Custom Code for Efficient Query Execution on Heterogeneous 
 Processors](https://doi.org/10.1007/s00778-018-0512-y)
 
