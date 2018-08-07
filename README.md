@@ -79,12 +79,14 @@ You will be ask where you want to store them.
 All scripts for the experiments will ask for the pathes to the CoGaDB executable, to the TPC-H database and to the SSB database.
 Files related to the exploration experiments are located in the folder 
 [`Hawk-VLDBJ/benchmarks/exploration`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/tree/master/source/benchmarks/exploration).
-Alls files for the Falcon Query Experiment can be found in the folder 
+All files for the Falcon Query Experiment can be found in the folder 
 [`Hawk-VLDBJ/benchmarks/falcon_query_experiments`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/tree/master/source/benchmarks/falcon_query_experiments).
 
 ### Exploration Experiments
 
 #### Full Exploration
+In this experiment we execute all possible variants for queries defined in the subfolder [`full_exploration_queries`](https://github.com/TU-Berlin-DIMA/Hawk-VLDBJ/tree/master/source/benchmarks/exploration/full_exploration_queries) as `*.coga` file.
+As result of this experiment we get the execution time of each variant per query in the subfolder `results`.
 
 #### Feature Wise Exploration
 In multiple iterations we execute all possible values per dimension.
