@@ -1,5 +1,4 @@
-# Generating Custom Code for Effi
-cient Query Execution on Heterogeneous Processors
+# Generating Custom Code for Efficient Query Execution on Heterogeneous Processors
 This repository contains our work on custom code generation for efficient query execution on heterogenous processors.
 It was first published in the [VLDB Journal](http://vldb.org/vldb_journal).
 
